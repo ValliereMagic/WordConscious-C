@@ -25,6 +25,60 @@ void linkedlist_print(node_t* head) {
 	}
 }
 
+int indexOf_INT(void* value, node_t* current) {
+    int counter = 0;
+    int* searchFor = (int*) value;
+
+    if (searchFor == NULL) {
+        return -1;
+    }
+
+    while(current != NULL) {
+        if (current->type == INT && *searchFor == *(int*)current->val) {
+            return counter;
+        }
+        current = current->next;
+        counter++;
+    }
+    return -1;
+}
+
+int indexOf_CHAR(void* value, node_t* current) {
+    int counter = 0;
+    char* searchFor = (char*) value;
+
+    if(searchFor == NULL) {
+        return -1;
+    }
+
+    while(current != NULL) {
+        if (current->type == CHAR && strcmp(searchFor, current->val) == 0) {
+            return counter;
+        }
+        current = current->next;
+        counter++;
+    }
+    return -1;
+}
+
+int indexOf_DOUBLE(void* value, node_t* current) {
+    int counter = 0;
+    double* searchFor = (double*) value;
+
+    if (searchFor == NULL) {
+        return -1;
+    }
+
+    while(current != NULL) {
+        if (current->type == DOUBLE && *searchFor == *(double*)current->val) {
+            return counter;
+        }
+        current = current->next;
+        counter++;
+    }
+    return -1;
+}
+
 //takes a void pointer, and the head
 //of the linkedlist as parameters.
 //if the element is found in the list
@@ -33,61 +87,18 @@ void linkedlist_print(node_t* head) {
 int linkedlist_indexOf(void* value, node_t* head, nodeType_t type) {
     node_t* current = head;
 
-    int counter = 0;
-
     switch(type) {
-        case INT: {
-
-            int* searchFor = (int*) value;
-
-            if (searchFor == NULL) {
-                return -1;
-            }
-
-            while(current != NULL) {
-                if (current->type == INT && *searchFor == *(int*)current->val) {
-                    return counter;
-                }
-                current = current->next;
-                counter++;
-            }
+        case INT:
+            return indexOf_INT(value, current);
             break;
-        }
-        case CHAR: {
-
-            char* searchFor = (char*) value;
-
-            if(searchFor == NULL) {
-                return -1;
-            }
-
-            while(current != NULL) {
-                if (current->type == CHAR && strcmp(searchFor, current->val) == 0) {
-                    return counter;
-                }
-                current = current->next;
-                counter++;
-            }
+        
+        case CHAR: 
+            return indexOf_CHAR(value, current);
             break;
-        }
 
-        case DOUBLE: {
-
-            double* searchFor = (double*) value;
-
-            if (searchFor == NULL) {
-                return -1;
-            }
-
-            while(current != NULL) {
-                if (current->type == DOUBLE && *searchFor == *(double*)current->val) {
-                    return counter;
-                }
-                current = current->next;
-                counter++;
-            }
+        case DOUBLE: 
+        return indexOf_DOUBLE(value, current);
             break;
-        }
     }
 
     return -1;

@@ -31,18 +31,22 @@ int main(void) {
 	*test = 6;
 	linkedlist_add(listHead, test, INT);
 
+	double* testDouble = malloc(8);
+	*testDouble = 3.14159265;
+	linkedlist_add(listHead, testDouble, DOUBLE);
+
 	printf("Index of 6 in the list: %d\n", linkedlist_indexOf(test, listHead, INT));
+	printf("Index of \"Hello World\" in the list: %d\n", linkedlist_indexOf(helloList, listHead, CHAR));
+	printf("Index of PI in the list: %d\n", linkedlist_indexOf(testDouble, listHead, DOUBLE));
 
 	node_t testNode = linkedlist_get(listHead, 1);
 	printf("Value at %d: %d\n", 1, *(int*)testNode.val);
 
 	printf("===printing list===\n");
 	linkedlist_print(listHead);
-	int d;
-	scanf(" %d", &d);
+
 	printf("===deleting list===\n");
 	linkedlist_delete(listHead);
-	scanf(" %d", &d);
 	
 	return 0;
 }
