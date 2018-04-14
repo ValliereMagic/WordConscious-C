@@ -25,16 +25,17 @@ void linkedlist_print(node_t* head) {
 	}
 }
 
-int indexOf_INT(void* value, node_t* current) {
+//find the index of an integer in the linked list
+//return -1 if not found
+int indexOf_INT(int* value, node_t* current) {
     int counter = 0;
-    int* searchFor = (int*) value;
 
-    if (searchFor == NULL) {
+    if (value == NULL) {
         return -1;
     }
 
     while(current != NULL) {
-        if (current->type == INT && *searchFor == *(int*)current->val) {
+        if (current->type == INT && *value == *(int*)current->val) {
             return counter;
         }
         current = current->next;
@@ -43,16 +44,17 @@ int indexOf_INT(void* value, node_t* current) {
     return -1;
 }
 
-int indexOf_CHAR(void* value, node_t* current) {
+//find the index of a character in the linked list
+//return -1 if not found
+int indexOf_CHAR(char* value, node_t* current) {
     int counter = 0;
-    char* searchFor = (char*) value;
 
-    if(searchFor == NULL) {
+    if(value == NULL) {
         return -1;
     }
 
     while(current != NULL) {
-        if (current->type == CHAR && strcmp(searchFor, current->val) == 0) {
+        if (current->type == CHAR && strcmp(value, current->val) == 0) {
             return counter;
         }
         current = current->next;
@@ -61,16 +63,17 @@ int indexOf_CHAR(void* value, node_t* current) {
     return -1;
 }
 
-int indexOf_DOUBLE(void* value, node_t* current) {
+//find the index of a double in the linked list
+//return -1 if not found
+int indexOf_DOUBLE(double* value, node_t* current) {
     int counter = 0;
-    double* searchFor = (double*) value;
 
-    if (searchFor == NULL) {
+    if (value == NULL) {
         return -1;
     }
 
     while(current != NULL) {
-        if (current->type == DOUBLE && *searchFor == *(double*)current->val) {
+        if (current->type == DOUBLE && *value == *(double*)current->val) {
             return counter;
         }
         current = current->next;
@@ -89,15 +92,15 @@ int linkedlist_indexOf(void* value, node_t* head, nodeType_t type) {
 
     switch(type) {
         case INT:
-            return indexOf_INT(value, current);
+            return indexOf_INT((int*)value, current);
             break;
         
         case CHAR: 
-            return indexOf_CHAR(value, current);
+            return indexOf_CHAR((char*)value, current);
             break;
 
         case DOUBLE: 
-        return indexOf_DOUBLE(value, current);
+            return indexOf_DOUBLE((double*)value, current);
             break;
     }
 
