@@ -8,14 +8,12 @@
 #include "main.h"
 
 /*
-* TODO: test the rest of the functions,
+* TODO: test the functions,
 * make the list entirely manage it's own
 * memory, so that the user of the list
 * doesn't need to allocate memory
 * for everything passed to the list.
 *
-* TODO: create linkedlist_remove()
-* 		create linkedlist_set()
 */
 
 int main(void) {
@@ -42,11 +40,30 @@ int main(void) {
 	node_t testNode = linkedlist_get(listHead, 1);
 	printf("Value at %d: %d\n", 1, *(int*)testNode.val);
 
-	printf("===printing list===\n");
+	printf("===printing list 1st time===\n");
+	linkedlist_print(listHead);
+
+	printf("remove codes: %d %d\n", linkedlist_removeAt(listHead, 0), linkedlist_removeAt(listHead, 1));
+
+	printf("===printing list 2nd time===\n");
+	linkedlist_print(listHead);
+
+	linkedlist_removeValue(listHead, testDouble, DOUBLE);
+
+	printf("===printing list 3rd time===\n");
+	linkedlist_print(listHead);
+
+	int* testInt = malloc(4);
+	*testInt = 64;
+
+	linkedlist_set(listHead, testInt, 0, INT);
+
+	printf("===printing list 4th time===\n");
 	linkedlist_print(listHead);
 
 	printf("===deleting list===\n");
 	linkedlist_delete(listHead);
+	free(testDouble);
 	
 	return 0;
 }
