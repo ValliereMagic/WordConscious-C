@@ -23,7 +23,20 @@ node_t* linkedlist_create(void* firstVal, nodeType_t type);
 void linkedlist_print(node_t* head);
 
 //add a new element to the linked list
+//a return of 1 means successful, -1 means failure
 int linkedlist_add(node_t* head, void* val, nodeType_t type);
+
+//remove a value at a specified index
+//a return of 1 means successful, -1 means failure
+int linkedlist_removeAt(node_t* head, int index);
+
+//remove a passed value from the list
+//a return of 1 means successful, -1 means failure
+int linkedlist_removeValue(node_t* head, void* value, nodeType_t type);
+
+//set a node already in the list to a new value
+//a return of 1 means successful, -1 means failure
+int linkedlist_set(node_t* head, void* value, int index, nodeType_t type);
 
 //return a copy of the node at the index passed.
 //If the index is out of bounds, a node_t with

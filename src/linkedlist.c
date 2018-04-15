@@ -1,4 +1,5 @@
 #include "linkedlist.h"
+void delete_node_t(node_t* node);
 
 //print out each value stored in the linked
 //list.
@@ -107,6 +108,46 @@ int linkedlist_indexOf(void* value, node_t* head, nodeType_t type) {
     return -1;
 }
 
+//delete a node at a specified index.
+//if the index is out of bounds
+//-1 will be returned.
+//1 will be returned on success.
+int linkedlist_removeAt(node_t* head, int index) {
+    node_t* current = head;
+    node_t* previous = NULL;
+
+    for (int i = 0; i < index; i++) {
+        if (current == NULL) {
+            return -1;
+        }
+        previous = current;
+        current = current->next;
+    }
+    
+    if (current == NULL || previous == NULL) {
+        return -1;
+    }
+
+    previous->next = current->next;
+
+    delete_node_t(current);
+    return 1;
+}
+
+//remove a specified value from the list
+//if the value is not in the list
+//-1 will be returned.
+//1 will be returned on success
+int linkedlist_removeValue(node_t* head, void* value, nodeType_t type) {
+    int location = linkedlist_indexOf(value, head, type);
+
+    if (location == -1) {
+        return location;
+    }
+
+    return linkedlist_removeAt(head, location);
+}
+
 //return the amount of elements stored in
 //the linked list.
 int linkedlist_size(node_t* head) {
@@ -121,13 +162,11 @@ int linkedlist_size(node_t* head) {
     return counter;
 }
 
-//locate element at specified index, and
-//return a copy. If the index is out of
-//bounds a node_t with NULL values and
-//a type of INT will be returned.
-node_t linkedlist_get(node_t* head, int index) {
+//private list function for getting the
+//node pointer at a specific index
+node_t* linkedlist_get_p(node_t* head, int index) {
     node_t* current = head;
-    node_t returnedNode;
+
     int counter = 0;
 
     if (index >= 0) {
@@ -135,20 +174,49 @@ node_t linkedlist_get(node_t* head, int index) {
         while(current != NULL) {
             
             if (counter == index) {
-                returnedNode = *current;
-                return returnedNode;
+                return current;
             }
             
             current = current->next;
             counter++;
         }
     }
+    return NULL;
+}
 
-    returnedNode.val = NULL;
-    returnedNode.type = INT;
-    returnedNode.next = NULL;
+//locate element at specified index, and
+//return a copy. If the index is out of
+//bounds a node_t with NULL values and
+//a type of INT will be returned.
+node_t linkedlist_get(node_t* head, int index) {
+    node_t* current = linkedlist_get_p(head, index);
+    node_t returnedNode;
+
+    if (current != NULL) {
+        returnedNode.val = current->val;
+        returnedNode.type = current->type;
+        returnedNode.next = NULL;
+    } else {
+        returnedNode.val = NULL;
+        returnedNode.type = INT;
+        returnedNode.next = NULL;
+    }
 
     return returnedNode;
+}
+
+//set the value of a node, at a specific index
+int linkedlist_set(node_t* head, void* value, int index, nodeType_t type) {
+    node_t* current = linkedlist_get_p(head, index);
+
+    if (current == NULL) {
+        return -1;
+    }
+
+    current->val = value;
+    current->type = type;
+
+    return 1;
 }
 
 //return new linked list if
@@ -196,6 +264,14 @@ int linkedlist_add(node_t* head, void* val, nodeType_t type) {
 
 }
 
+//private list function for
+//deleting an individual node
+//from the list.
+void delete_node_t(node_t* node) {
+    free(node->val);
+    free(node);
+}
+
 //delete linked list using head passed.
 void linkedlist_delete(node_t* head) {
     node_t* current = head;
@@ -206,8 +282,8 @@ void linkedlist_delete(node_t* head) {
     while(current != NULL) {
         temp = current->next;
         printf("Deletion: %d.\n", i);
-        free(current->val);
-        free(current);
+        
+        delete_node_t(current);
         
         current = temp;
         i++;
