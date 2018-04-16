@@ -63,7 +63,6 @@ int main(void) {
 
 	printf("===deleting list===\n");
 	linkedlist_delete(listHead);
-	free(testDouble);
 	
 	return 0;
 }
