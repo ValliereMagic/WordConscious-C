@@ -6,63 +6,70 @@
  */
 
 #include "main.h"
+#include "list_test.h"
 
-/*
-* TODO: test the functions,
-* make the list entirely manage it's own
-* memory, so that the user of the list
-* doesn't need to allocate memory
-* for everything passed to the list.
-*
-*/
+#define MAX_WORD_LENGTH 128
 
-int main(void) {
-	char* helloList = malloc(sizeof("Hello World"));
-	strcpy(helloList, "Hello World");
-	node_t* listHead = linkedlist_create(helloList, CHAR);
+//read all the words from the lines of the words file
+//into a linked list.
+node_t* read_Words(void) {
+	FILE* file_ptr = fopen("words.txt", "r");
+	char file_line[MAX_WORD_LENGTH];
+	node_t* word_list = NULL;
 
-	if (listHead == NULL) {
-		return 1;
+	//make sure the file exists.
+	if (!file_ptr) {
+		return NULL;
 	}
 
-	int* test = malloc(4);
-	*test = 6;
-	linkedlist_add(listHead, test, INT);
+	//for every line in the file, copy the line into a new container
+	//and add that containter onto the linked list.
+	int counter = 0;
+	char* temp;
+	while(fgets(file_line, MAX_WORD_LENGTH, file_ptr) != NULL) {
+		temp = malloc(MAX_WORD_LENGTH);
+		char* strtok_rest = temp;
 
-	double* testDouble = malloc(8);
-	*testDouble = 3.14159265;
-	linkedlist_add(listHead, testDouble, DOUBLE);
+		//make sure the system is not out of memory.
+		if (temp == NULL) {
+			return NULL;
+		}
+		
+		//copy the line into the new container in linked list.
+		strcpy(temp, file_line);
+		//remove trailing \n from fgets.
+		strtok_r(temp, "\n", &strtok_rest);
 
-	printf("Index of 6 in the list: %d\n", linkedlist_indexOf(test, listHead, INT));
-	printf("Index of \"Hello World\" in the list: %d\n", linkedlist_indexOf(helloList, listHead, CHAR));
-	printf("Index of PI in the list: %d\n", linkedlist_indexOf(testDouble, listHead, DOUBLE));
+		//make the list for the first entry. Otherwise
+		//add onto the list.
+		if (counter == 0) {
+			word_list = linkedlist_create(temp, CHAR);
+			counter++;
+		} else {
+			linkedlist_add(word_list, temp, CHAR);
+		}
+	}
+	fclose(file_ptr);
+	return word_list;
+}
 
-	node_t testNode = linkedlist_get(listHead, 1);
-	printf("Value at %d: %d\n", 1, *(int*)testNode.val);
-
-	printf("===printing list 1st time===\n");
-	linkedlist_print(listHead);
-
-	printf("remove codes: %d %d\n", linkedlist_removeAt(listHead, 0), linkedlist_removeAt(listHead, 1));
-
-	printf("===printing list 2nd time===\n");
-	linkedlist_print(listHead);
-
-	linkedlist_removeValue(listHead, testDouble, DOUBLE);
-
-	printf("===printing list 3rd time===\n");
-	linkedlist_print(listHead);
-
-	int* testInt = malloc(4);
-	*testInt = 64;
-
-	linkedlist_set(listHead, testInt, 0, INT);
-
-	printf("===printing list 4th time===\n");
-	linkedlist_print(listHead);
-
-	printf("===deleting list===\n");
-	linkedlist_delete(listHead);
+int main(void) {
+	test_list();
 	
+	node_t* words = read_Words();
+	if (words != NULL) {
+		printf("%d\n", linkedlist_size(words));
+		printf("Index of fish: %d\n", linkedlist_indexOf("fish", words, CHAR));
+		printf("\n");
+		
+		printf("Enter a 2 digit integer => ");
+		int x;
+		scanf("%2d", &x);
+		
+		node_t retrievedWord = linkedlist_get(words, x);
+		printf("%s\n", (char*)retrievedWord.val);
+		
+		linkedlist_delete(words);
+	}
 	return 0;
 }
