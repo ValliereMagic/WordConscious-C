@@ -212,7 +212,8 @@ int linkedlist_set(node_t* head, void* value, int index, nodeType_t type) {
     if (current == NULL) {
         return -1;
     }
-
+    
+    free(current->val);
     current->val = value;
     current->type = type;
 
@@ -281,7 +282,7 @@ void linkedlist_delete(node_t* head) {
     
     while(current != NULL) {
         temp = current->next;
-        printf("Deletion: %d.\n", i);
+        //printf("Deletion: %d.\n", i);
         
         delete_node_t(current);
         

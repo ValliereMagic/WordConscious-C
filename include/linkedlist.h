@@ -15,6 +15,8 @@ typedef struct node {
     struct node* next;
 } node_t;
 
+//elements added to this list must be dynamically allocated.
+
 //returns the head of the new linked list, with a pointer in it
 //holding the first value.
 node_t* linkedlist_create(void* firstVal, nodeType_t type);
