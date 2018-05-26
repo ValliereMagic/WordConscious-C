@@ -1,5 +1,4 @@
 #include "linkedlist.h"
-#include <stdio.h>
 #include "sodium.h"
 
 #define MAX_WORD_LENGTH 128
@@ -47,16 +46,6 @@ node_t* read_Words(void) {
 	return word_list;
 }
 
-//returns 1 if char is in array
-int contains_char(char* array, int length, char charToFind) {
-	for (int i = 0; i < length; i++) {
-		if (array[i] == charToFind) {
-			return 1;
-		}
-	}
-	return 0;
-}
-
 node_t* generate_Guess_Characters(int number_Of_Chars) {
 
 	if (sodium_init() < 0) {
@@ -71,29 +60,25 @@ node_t* generate_Guess_Characters(int number_Of_Chars) {
 
 	char mustContainOne[] = {'a', 'e', 'i', 'o', 'u'};
 
-	for (int i = 0; i < number_Of_Chars;) {
-		uint32_t randInt = randombytes_uniform(26);
-		char* charToAdd = malloc(2);
+	for (int i = 0; i < number_Of_Chars; i++) {
+		char* charToAdd;
 
-		if (charToAdd == NULL) {
-			return NULL;
-		}
-		*charToAdd = possibleChars[randInt];
-		strcat(charToAdd, "\0");
-
-		if (guessable_Characters == NULL) {
-			guessable_Characters = linkedlist_create(charToAdd, CHAR);
-		} else {
-			linkedlist_add(guessable_Characters, charToAdd, CHAR);
-		}
-
+		//check to see if there is a vowel in the list of
+		//generated characters right before the last
+		//character is appended to the list
+		//if there is no vowel in the list
+		//append one as the last character
 		if (i == number_Of_Chars - 1) {
-			char oneExists = 0;
+			int oneExists = 0;
 
 			for (int i = 0; i < 5; i++) {
-				if (contains_char(possibleChars, 26, mustContainOne[i])) {
+				char searchChar[2];
+				
+				searchChar[0] = mustContainOne[i];
+				searchChar[1] = '\0';
+				
+				if (linkedlist_indexOf(searchChar, guessable_Characters, CHAR) != -1) {
 					oneExists = 1;
-					printf("exists\n");
 					break;
 				}
 			}
@@ -105,8 +90,9 @@ node_t* generate_Guess_Characters(int number_Of_Chars) {
 				if (charToAdd == NULL) {
 					return NULL;
 				}
-				*charToAdd = mustContainOne[randVowelIndex];
-				strcat(charToAdd, "\0");
+				
+				charToAdd[0] = mustContainOne[randVowelIndex];
+				charToAdd[1] = '\0';
 				
 				if (guessable_Characters == NULL) {
 					return NULL;
@@ -116,7 +102,21 @@ node_t* generate_Guess_Characters(int number_Of_Chars) {
 			}
 		}
 
-		i++;
+		uint32_t randInt = randombytes_uniform(26);
+		charToAdd = malloc(2);
+
+		if (charToAdd == NULL) {
+			return NULL;
+		}
+		
+		charToAdd[0] = possibleChars[randInt];
+		charToAdd[1] = '\0';
+
+		if (guessable_Characters == NULL) {
+			guessable_Characters = linkedlist_create(charToAdd, CHAR);
+		} else {
+			linkedlist_add(guessable_Characters, charToAdd, CHAR);
+		}
 	}
 	return guessable_Characters;
 }
