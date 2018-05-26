@@ -7,29 +7,15 @@
 
 #include "main.h"
 #include "words.h"
-#include "list_test.h"
+#include "tests.h"
 
 int main(void) {
-	//test_list();
-	
-	node_t* words; //= read_Words();
-	// if (words != NULL) {
-	// 	printf("%d\n", linkedlist_size(words));
-	// 	printf("Index of fish: %d\n", linkedlist_indexOf("fish", words, CHAR));
-	// 	printf("\n");
-		
-	// 	printf("Enter a 2 digit integer => ");
-	// 	int x;
-	// 	scanf("%2d", &x);
-		
-	// 	node_t retrievedWord = linkedlist_get(words, x);
-	// 	printf("%s\n", (char*)retrievedWord.val);
-		
-	// 	linkedlist_delete(words);
-	// }
+	test_list();
+	test_words_read();
 
-	words = generate_Guess_Characters(8);
-	linkedlist_print(words);
-	linkedlist_delete(words);
+	node_t* characters = generate_Guess_Characters(8);
+	linkedlist_print(characters);
+	printf("Amount of characters returned: %d\n", linkedlist_size(characters));
+	linkedlist_delete(characters);
 	return 0;
 }
