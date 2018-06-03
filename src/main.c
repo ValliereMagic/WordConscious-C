@@ -5,7 +5,9 @@
  *      Author: VoidMagic
  */
 
-#include "main.h"
+#include <stdio.h>
+
+#include "linkedlist.h"
 #include "words.h"
 #include "tests.h"
 #include "config.h"
