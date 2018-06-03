@@ -1,4 +1,9 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include "linkedlist.h"
+
 void delete_node_t(node_t* node);
 
 //print out each value stored in the linked

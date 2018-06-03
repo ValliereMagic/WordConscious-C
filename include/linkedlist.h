@@ -1,10 +1,6 @@
 #ifndef LINKEDLIST_H
 #define LINKEDLIST_H
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 typedef enum {
     INT, CHAR, DOUBLE
 } nodeType_t;
