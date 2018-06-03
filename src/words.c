@@ -1,5 +1,6 @@
 #include "linkedlist.h"
 #include "sodium.h"
+#include <string.h>
 
 #define MAX_WORD_LENGTH 128
 
