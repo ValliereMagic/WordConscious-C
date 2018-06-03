@@ -8,6 +8,7 @@
 #include "main.h"
 #include "words.h"
 #include "tests.h"
+#include "config.h"
 
 int main(void) {
 	test_list();
