@@ -23,8 +23,19 @@ AC_CONFIG_FILES([Makefile])
 AC_PROG_CC
 
 #Include the include file for libsodium
-CFLAGS="-I./lib/libsodium/include"
+#CFLAGS=""
 
 #add various checks here
+
+# Checks for header files.
+AC_CHECK_HEADERS([string.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_TYPE_UINT32_T
+AC_TYPE_UINT64_T
+AC_TYPE_UINT8_T
+
+# Checks for library functions.
+AC_FUNC_MALLOC
 
 AC_OUTPUT
