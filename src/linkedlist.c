@@ -6,6 +6,36 @@
 
 void delete_node_t(node_t* node);
 
+//private function to allocate memory properly
+void* allocate_memory(void* value, nodeType_t type) {
+    if (type == CHAR) {
+        if (value == NULL) {
+            return NULL;
+        }
+        return malloc(sizeof(char) * (strlen(value) + 1));
+    
+    } else if (type == INT) {
+        return malloc(sizeof(int));
+    
+    } else if (type == DOUBLE) {
+        return malloc(sizeof(double));
+    }
+
+}
+
+//private function to copy values passed to allocated memory
+void copy_value(void* dest, void* src, nodeType_t type) {
+    if (type == CHAR) {
+        strcpy(dest, src);
+    
+    } else if (type == INT) {
+        *(int*)dest = *(int*)src;
+    
+    } else if (type == DOUBLE) {
+        *(double*)dest = *(double*)src;
+    }
+}
+
 //print out each value stored in the linked
 //list.
 void linkedlist_print(node_t* head) {
@@ -217,9 +247,17 @@ int linkedlist_set(node_t* head, void* value, int index, nodeType_t type) {
     if (current == NULL) {
         return -1;
     }
+
+    void* new_val = allocate_memory(value, type);
+
+    if (new_val == NULL) {
+        return -1;
+    }
+
+    copy_value(new_val, value, type);
     
     free(current->val);
-    current->val = value;
+    current->val = new_val;
     current->type = type;
 
     return 1;
@@ -232,7 +270,16 @@ node_t* linkedlist_create(void* firstVal, nodeType_t type) {
     head = malloc(sizeof(node_t));
 
     if (head != NULL) {
-        head->val = firstVal;
+        //allocate memory for new value
+        void* new_val = allocate_memory(firstVal, type);
+
+        if (new_val == NULL) {
+            return NULL;
+        }
+        //copy passed value to new_val
+        copy_value(new_val, firstVal, type);
+
+        head->val = new_val;
         head->type = type;
         head->next = NULL;
     }
@@ -259,10 +306,20 @@ int linkedlist_add(node_t* head, void* val, nodeType_t type) {
         return -1;
     }
 
+    //allocate memory for the value of the new node.
+    void* new_val = allocate_memory(val, type);
+
+    if (new_val == NULL) {
+        return -1;
+    }
+    
+    //copy the passed value to the allocated memory
+    copy_value(new_val, val, type);
+
     //set current to freshly made node.
     current = current->next;
     
-    current->val = val;
+    current->val = new_val;
     current->type = type;
     current->next = NULL;
 
