@@ -13,25 +13,18 @@ void test_list(void) {
 
     printf("\n\n===Testing LinkedList===\n\n");
 
-	char* helloList = malloc(sizeof("Hello World"));
-	strcpy(helloList, "Hello World");
+	char helloList[sizeof("Hello World") + 1] = "Hello World";
 	node_t* listHead = linkedlist_create(helloList, CHAR);
 
-	if (listHead == NULL) {
-		return;
-	}
+	int test = 6;
+	linkedlist_add(listHead, &test, INT);
 
-	int* test = malloc(4);
-	*test = 6;
-	linkedlist_add(listHead, test, INT);
+	double testDouble = 3.14159265;
+	linkedlist_add(listHead, &testDouble, DOUBLE);
 
-	double* testDouble = malloc(8);
-	*testDouble = 3.14159265;
-	linkedlist_add(listHead, testDouble, DOUBLE);
-
-	printf("Index of 6 in the list: %d\n", linkedlist_indexOf(test, listHead, INT));
+	printf("Index of 6 in the list: %d\n", linkedlist_indexOf(&test, listHead, INT));
 	printf("Index of \"Hello World\" in the list: %d\n", linkedlist_indexOf(helloList, listHead, CHAR));
-	printf("Index of PI in the list: %d\n", linkedlist_indexOf(testDouble, listHead, DOUBLE));
+	printf("Index of PI in the list: %d\n", linkedlist_indexOf(&testDouble, listHead, DOUBLE));
 
 	node_t testNode = linkedlist_get(listHead, 1);
 	printf("Value at %d: %d\n", 1, *(int*)testNode.val);
@@ -44,15 +37,14 @@ void test_list(void) {
 	printf("===printing list 2nd time===\n");
 	linkedlist_print(listHead);
 
-	linkedlist_removeValue(listHead, testDouble, DOUBLE);
+	linkedlist_removeValue(listHead, &testDouble, DOUBLE);
 
 	printf("===printing list 3rd time===\n");
 	linkedlist_print(listHead);
 
-	int* testInt = malloc(4);
-	*testInt = 64;
+	int testInt = 64;
 
-	linkedlist_set(listHead, testInt, 0, INT);
+	linkedlist_set(listHead, &testInt, 0, INT);
 
 	printf("===printing list 4th time===\n");
 	linkedlist_print(listHead);

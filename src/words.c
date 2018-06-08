@@ -16,31 +16,21 @@ node_t* read_Words(void) {
 		return NULL;
 	}
 
-	//for every line in the file, copy the line into a new container
-	//and add that containter onto the linked list.
+	//Add each line in the file to the linked list.
 	int counter = 0;
-	char* temp;
 	while(fgets(file_line, MAX_WORD_LENGTH, file_ptr) != NULL) {
-		temp = malloc(MAX_WORD_LENGTH);
-		char* strtok_rest = temp;
-
-		//make sure the system is not out of memory.
-		if (temp == NULL) {
-			return NULL;
-		}
+		char* strtok_rest = file_line;
 		
-		//copy the line into the new container in linked list.
-		strcpy(temp, file_line);
-		//remove trailing \n from fgets.
-		strtok_r(temp, "\n", &strtok_rest);
+		//remove trailing \n from fgets
+		strtok_r(file_line, "\n", &strtok_rest);
 
 		//make the list for the first entry. Otherwise
 		//add onto the list.
 		if (counter == 0) {
-			word_list = linkedlist_create(temp, CHAR);
+			word_list = linkedlist_create(file_line, CHAR);
 			counter++;
 		} else {
-			linkedlist_add(word_list, temp, CHAR);
+			linkedlist_add(word_list, file_line, CHAR);
 		}
 	}
 	fclose(file_ptr);
@@ -62,7 +52,7 @@ node_t* generate_Guess_Characters(int number_Of_Chars) {
 	char mustContainOne[] = {'a', 'e', 'i', 'o', 'u'};
 
 	for (int i = 0; i < number_Of_Chars; i++) {
-		char* charToAdd;
+		char charToAdd[2];
 
 		//check to see if there is a vowel in the list of
 		//generated characters right before the last
@@ -86,11 +76,6 @@ node_t* generate_Guess_Characters(int number_Of_Chars) {
 
 			if (!oneExists) {
 				int randVowelIndex = randombytes_uniform(5);
-				charToAdd = malloc(2);
-				
-				if (charToAdd == NULL) {
-					return NULL;
-				}
 				
 				charToAdd[0] = mustContainOne[randVowelIndex];
 				charToAdd[1] = '\0';
@@ -104,11 +89,6 @@ node_t* generate_Guess_Characters(int number_Of_Chars) {
 		}
 
 		uint32_t randInt = randombytes_uniform(26);
-		charToAdd = malloc(2);
-
-		if (charToAdd == NULL) {
-			return NULL;
-		}
 		
 		charToAdd[0] = possibleChars[randInt];
 		charToAdd[1] = '\0';
