@@ -22,9 +22,6 @@ AC_CONFIG_FILES([Makefile])
 #Find and probe C compiler
 AC_PROG_CC
 
-#Include the include file for libsodium
-#CFLAGS=""
-
 #add various checks here
 
 # Checks for header files.
