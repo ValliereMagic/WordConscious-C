@@ -20,7 +20,7 @@ void* allocate_memory(void* value, nodeType_t type) {
     } else if (type == DOUBLE) {
         return malloc(sizeof(double));
     }
-
+    return NULL;
 }
 
 //private function to copy values passed to allocated memory
@@ -143,6 +143,43 @@ int linkedlist_indexOf(void* value, node_t* head, nodeType_t type) {
     return -1;
 }
 
+//return the amount of elements stored in
+//the linked list.
+int linkedlist_size(node_t* head) {
+    node_t* current = head;
+    int counter = 0;
+
+    while(current != NULL) {
+        current = current->next;
+        counter++;
+    }
+
+    return counter;
+}
+
+//Return the node_t* at the index passed.
+//If the index is out of bounds, NULL will
+//be returned.
+node_t* linkedlist_get(node_t* head, int index) {
+    node_t* current = head;
+
+    int counter = 0;
+
+    if (index >= 0) {
+        
+        while(current != NULL) {
+            
+            if (counter == index) {
+                return current;
+            }
+            
+            current = current->next;
+            counter++;
+        }
+    }
+    return NULL;
+}
+
 //delete a node at a specified index.
 //if the index is out of bounds
 //-1 will be returned.
@@ -183,66 +220,9 @@ int linkedlist_removeValue(node_t* head, void* value, nodeType_t type) {
     return linkedlist_removeAt(head, location);
 }
 
-//return the amount of elements stored in
-//the linked list.
-int linkedlist_size(node_t* head) {
-    node_t* current = head;
-    int counter = 0;
-
-    while(current != NULL) {
-        current = current->next;
-        counter++;
-    }
-
-    return counter;
-}
-
-//private list function for getting the
-//node pointer at a specific index
-node_t* linkedlist_get_p(node_t* head, int index) {
-    node_t* current = head;
-
-    int counter = 0;
-
-    if (index >= 0) {
-        
-        while(current != NULL) {
-            
-            if (counter == index) {
-                return current;
-            }
-            
-            current = current->next;
-            counter++;
-        }
-    }
-    return NULL;
-}
-
-//locate element at specified index, and
-//return a copy. If the index is out of
-//bounds a node_t with NULL values and
-//a type of INT will be returned.
-node_t linkedlist_get(node_t* head, int index) {
-    node_t* current = linkedlist_get_p(head, index);
-    node_t returnedNode;
-
-    if (current != NULL) {
-        returnedNode.val = current->val;
-        returnedNode.type = current->type;
-        returnedNode.next = NULL;
-    } else {
-        returnedNode.val = NULL;
-        returnedNode.type = INT;
-        returnedNode.next = NULL;
-    }
-
-    return returnedNode;
-}
-
 //set the value of a node, at a specific index
 int linkedlist_set(node_t* head, void* value, int index, nodeType_t type) {
-    node_t* current = linkedlist_get_p(head, index);
+    node_t* current = linkedlist_get(head, index);
 
     if (current == NULL) {
         return -1;

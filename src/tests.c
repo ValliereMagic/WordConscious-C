@@ -26,8 +26,8 @@ void test_list(void) {
 	printf("Index of \"Hello World\" in the list: %d\n", linkedlist_indexOf(helloList, listHead, CHAR));
 	printf("Index of PI in the list: %d\n", linkedlist_indexOf(&testDouble, listHead, DOUBLE));
 
-	node_t testNode = linkedlist_get(listHead, 1);
-	printf("Value at %d: %d\n", 1, *(int*)testNode.val);
+	node_t* testNode = linkedlist_get(listHead, 1);
+	printf("Value at %d: %d\n", 1, *(int*)testNode->val);
 
 	printf("===printing list 1st time===\n");
 	linkedlist_print(listHead);
@@ -65,8 +65,8 @@ void test_words_read(void) {
 		int x;
 		scanf("%2d", &x);
 		
-		node_t retrievedWord = linkedlist_get(words, x);
-		printf("%s\n", (char*)retrievedWord.val);
+		node_t* retrievedWord = linkedlist_get(words, x);
+		printf("%s\n", (char*)retrievedWord->val);
 		
 		linkedlist_delete(words);
 	}
