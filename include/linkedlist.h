@@ -34,11 +34,10 @@ int linkedlist_removeValue(node_t* head, void* value, nodeType_t type);
 //a return of 1 means successful, -1 means failure
 int linkedlist_set(node_t* head, void* value, int index, nodeType_t type);
 
-//return a copy of the node at the index passed.
-//If the index is out of bounds, a node_t with
-//NULL values and a type of INT will be
-//returned.
-node_t linkedlist_get(node_t* head, int index);
+//Return the node_t* at the index passed.
+//If the index is out of bounds, NULL will
+//be returned.
+node_t* linkedlist_get(node_t* head, int index);
 
 //find the index of the node passed in the linkedlist
 //if it is present. If the element is not found,
