@@ -73,7 +73,7 @@ int check_equality(void* value, node_t* current) {
             break;
         }
         case CHAR: {
-            return (*(char*)value == *(char*)current->val);
+            return (strcmp(current->val, value) == 0);
             break;
         }
         case DOUBLE: {
