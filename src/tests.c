@@ -37,7 +37,7 @@ void test_list(void) {
 	printf("===printing list 2nd time===\n");
 	linkedlist_print(listHead);
 
-	linkedlist_removeValue(listHead, &testDouble, DOUBLE);
+	printf("Remove using value code: %d\n", linkedlist_removeValue(listHead, &testDouble, DOUBLE));
 
 	printf("===printing list 3rd time===\n");
 	linkedlist_print(listHead);

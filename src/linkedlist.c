@@ -61,61 +61,27 @@ void linkedlist_print(node_t* head) {
 	}
 }
 
-//find the index of an integer in the linked list
-//return -1 if not found
-int indexOf_INT(int* value, node_t* current) {
-    int counter = 0;
-
-    if (value == NULL) {
-        return -1;
+//return 1 if equal, 0 if not.
+int check_equality(void* value, node_t* current) {
+    if (current == NULL) {
+        return 0;
     }
 
-    while(current != NULL) {
-        if (current->type == INT && *value == *(int*)current->val) {
-            return counter;
+    switch(current->type) {
+        case INT: {
+            return (*(int*)value == *(int*)current->val);
+            break;
         }
-        current = current->next;
-        counter++;
-    }
-    return -1;
-}
-
-//find the index of a character in the linked list
-//return -1 if not found
-int indexOf_CHAR(char* value, node_t* current) {
-    int counter = 0;
-
-    if(value == NULL) {
-        return -1;
-    }
-
-    while(current != NULL) {
-        if (current->type == CHAR && strcmp(value, current->val) == 0) {
-            return counter;
+        case CHAR: {
+            return (*(char*)value == *(char*)current->val);
+            break;
         }
-        current = current->next;
-        counter++;
-    }
-    return -1;
-}
-
-//find the index of a double in the linked list
-//return -1 if not found
-int indexOf_DOUBLE(double* value, node_t* current) {
-    int counter = 0;
-
-    if (value == NULL) {
-        return -1;
-    }
-
-    while(current != NULL) {
-        if (current->type == DOUBLE && *value == *(double*)current->val) {
-            return counter;
+        case DOUBLE: {
+            return (*(double*)value == *(double*)current->val);
+            break;
         }
-        current = current->next;
-        counter++;
     }
-    return -1;
+    return 0;
 }
 
 //takes a void pointer, and the head
@@ -125,19 +91,15 @@ int indexOf_DOUBLE(double* value, node_t* current) {
 //otherwise -1 will be returned.
 int linkedlist_indexOf(void* value, node_t* head, nodeType_t type) {
     node_t* current = head;
+    
+    int counter = 0;
 
-    switch(type) {
-        case INT:
-            return indexOf_INT((int*)value, current);
-            break;
-        
-        case CHAR: 
-            return indexOf_CHAR((char*)value, current);
-            break;
-
-        case DOUBLE: 
-            return indexOf_DOUBLE((double*)value, current);
-            break;
+    while (current != NULL) {
+        if (check_equality(value, current)) {
+            return counter;
+        }
+        current = current->next;
+        counter++;
     }
 
     return -1;
@@ -211,13 +173,23 @@ int linkedlist_removeAt(node_t* head, int index) {
 //-1 will be returned.
 //1 will be returned on success
 int linkedlist_removeValue(node_t* head, void* value, nodeType_t type) {
-    int location = linkedlist_indexOf(value, head, type);
+    node_t* current = head;
+    node_t* previous = NULL;
 
-    if (location == -1) {
-        return location;
+    while (current != NULL) {
+        if (check_equality(value, current)) {
+            break;
+        }
+        previous = current;
+        current = current->next;
     }
 
-    return linkedlist_removeAt(head, location);
+    if (previous == NULL) {
+        return -1;
+    
+    } else {
+        return linkedlist_removeAt(previous, 1);
+    }
 }
 
 //set the value of a node, at a specific index
