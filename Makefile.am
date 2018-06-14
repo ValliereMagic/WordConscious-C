@@ -11,7 +11,7 @@ WordConscious_SOURCES = \
     src/lib/linkedlist/linkedlist.h
 
 #Link libsodium
-WordConscious_LDADD = -lsodium liblinkedlist.la
+WordConscious_LDADD = liblinkedlist.la
 
 #Add libsodium CFLAGS
 WordConscious_CFLAGS = -I./src/lib/linkedlist
