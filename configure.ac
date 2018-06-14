@@ -5,16 +5,25 @@ AC_INIT([WordConscious], [0.0.1])
 AC_PREREQ([2.68])
 
 #File must exist for the build to continue
-AC_CONFIG_SRCDIR([src/main.c])
+AC_CONFIG_SRCDIR([src/bin/main.c])
 
 #Location for header file for make config
-AC_CONFIG_HEADERS([include/config.h])
+AC_CONFIG_HEADERS([src/bin/config.h])
 
 #Auxiliary build files
 AC_CONFIG_AUX_DIR([build-aux])
 
+#Configure M4 DIR
+AC_CONFIG_MACRO_DIRS([m4])
+
 #Init automake
 AM_INIT_AUTOMAKE([1.11 -Wall -Werror foreign subdir-objects])
+
+#Allow use of non-POSIX archivers
+AM_PROG_AR
+
+#Init Libtool
+LT_INIT
 
 #Configure creates makefile
 AC_CONFIG_FILES([Makefile])
@@ -23,6 +32,9 @@ AC_CONFIG_FILES([Makefile])
 AC_PROG_CC
 
 #add various checks here
+
+#check for libsodium
+AC_CHECK_LIB([sodium], [sodium_init], [], [AC_MSG_ERROR([libsodium not found!])])
 
 # Checks for header files.
 AC_CHECK_HEADERS([string.h])
