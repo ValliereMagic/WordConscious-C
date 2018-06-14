@@ -22,3 +22,6 @@ lib_LTLIBRARIES = liblinkedlist.la
 #Linkedlist Sources
 liblinkedlist_la_SOURCES = \
     src/lib/linkedlist/linkedlist.c src/lib/linkedlist/linkedlist.h
+
+#Linkedlist Version
+liblinkedlist_la_LDFLAGS = -version-info 0:0:1
