@@ -24,4 +24,4 @@ liblinkedlist_la_SOURCES = \
     src/lib/linkedlist/linkedlist.c src/lib/linkedlist/linkedlist.h
 
 #Linkedlist Version
-liblinkedlist_la_LDFLAGS = -version-info 0:0:1
+liblinkedlist_la_LDFLAGS = -version-info 0:0:0
