@@ -247,18 +247,27 @@ node_t* linkedlist_clone(node_t* head) {
     node_t* current = head;
     node_t* new = NULL;
 
+    //make sure a NULL list was not passed
+    //to be copied.
     if (current == NULL) {
         return NULL;
     }
 
+    //create the new list from the head of the passed list
     new = linkedlist_create(current->val, current->type);
 
+    //make sure that the creation of the new list didn't fail
     if (new == NULL) {
         return NULL;
     }
 
+    //go to the next element of the list to copy before
+    //adding the next element, so as to not duplicate
+    //the initial element.
     current = current->next;
 
+    //add the rest of the elements until the end of the
+    //list to copy is reached.
     while(current != NULL) {
         linkedlist_add(new, current->val, current->type);
         current = current->next;
