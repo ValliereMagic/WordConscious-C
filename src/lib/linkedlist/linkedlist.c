@@ -8,10 +8,12 @@ void delete_node_t(node_t* node);
 
 //private function to allocate memory properly
 void* allocate_memory(void* value, nodeType_t type) {
+    
+    if (value == NULL) {
+        return NULL;
+    }
+    
     if (type == CHAR) {
-        if (value == NULL) {
-            return NULL;
-        }
         return malloc(sizeof(char) * (strlen(value) + 1));
     
     } else if (type == INT) {
@@ -237,6 +239,33 @@ node_t* linkedlist_create(void* firstVal, nodeType_t type) {
     }
 
     return head;
+}
+
+//return a clone of the passed linked list.
+//return NULL on failure
+node_t* linkedlist_clone(node_t* head) {
+    node_t* current = head;
+    node_t* new = NULL;
+
+    if (current == NULL) {
+        return NULL;
+    }
+
+    new = linkedlist_create(current->val, current->type);
+
+    if (new == NULL) {
+        return NULL;
+    }
+
+    current = current->next;
+
+    while(current != NULL) {
+        linkedlist_add(new, current->val, current->type);
+        current = current->next;
+    }
+
+    return new;
+
 }
 
 //add a element to the end of the
