@@ -32,6 +32,14 @@ void test_list(void) {
 	printf("===printing list 1st time===\n");
 	linkedlist_print(listHead);
 
+	printf("===Cloning list===\n");
+	node_t* clone_node = linkedlist_clone(listHead);
+
+	printf("===Printing cloned list===\n");
+	linkedlist_print(clone_node);
+
+	linkedlist_delete(clone_node);
+
 	printf("remove codes: %d %d\n", linkedlist_removeAt(listHead, 0), linkedlist_removeAt(listHead, 1));
 
 	printf("===printing list 2nd time===\n");

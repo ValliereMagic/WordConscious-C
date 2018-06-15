@@ -22,6 +22,10 @@ void linkedlist_print(node_t* head);
 //a return of 1 means successful, -1 means failure
 int linkedlist_add(node_t* head, void* val, nodeType_t type);
 
+//return a clone of the passed linked list.
+//return NULL on failure
+node_t* linkedlist_clone(node_t* head);
+
 //remove a value at a specified index
 //a return of 1 means successful, -1 means failure
 int linkedlist_removeAt(node_t* head, int index);
