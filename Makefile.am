@@ -13,12 +13,14 @@ WordConscious_SOURCES = \
 #Link libsodium
 WordConscious_LDADD = libWC_linkedlist.la @WC_libflags@ 
 
-WordConsciousdir=$(sysconfdir)/WordConscious
+#define data directory
+WordConsciousdatadir=@datadir@/WordConscious
 
-#Add libsodium CFLAGS
-WordConscious_CFLAGS = -I./src/lib/linkedlist -DCONFDIR=\"$(WordConsciousdir)\"
+#Add CFLAGS
+WordConscious_CFLAGS = -I./src/lib/linkedlist -DDATA_DIR=\"${WordConsciousdatadir}\"
 
-WordConscious_DATA = words.txt
+#Add words file
+WordConsciousdata_DATA = words.txt
 
 #Linkedlist Library
 lib_LTLIBRARIES = libWC_linkedlist.la
@@ -29,3 +31,6 @@ libWC_linkedlist_la_SOURCES = \
 
 #Linkedlist Version
 libWC_linkedlist_la_LDFLAGS = -version-info 0:0:0 -no-undefined
+
+#Install linked list headers
+include_HEADERS = src/lib/linkedlist/linkedlist.h

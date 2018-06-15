@@ -7,7 +7,7 @@
 //read all the words from the lines of the words file
 //into a linked list.
 node_t* read_Words(void) {
-	FILE* file_ptr = fopen(CONFDIR "/words.txt", "r");
+	FILE* file_ptr = fopen(DATA_DIR "/words.txt", "r");
 	char file_line[MAX_WORD_LENGTH];
 	node_t* word_list = NULL;
 
