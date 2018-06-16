@@ -13,13 +13,13 @@ void* allocate_memory(void* value, nodeType_t type) {
         return NULL;
     }
     
-    if (type == CHAR) {
+    if (type == LINKEDLIST_CHAR) {
         return malloc(sizeof(char) * (strlen(value) + 1));
     
-    } else if (type == INT) {
+    } else if (type == LINKEDLIST_INT) {
         return malloc(sizeof(int));
     
-    } else if (type == DOUBLE) {
+    } else if (type == LINKEDLIST_DOUBLE) {
         return malloc(sizeof(double));
     }
     return NULL;
@@ -27,13 +27,13 @@ void* allocate_memory(void* value, nodeType_t type) {
 
 //private function to copy values passed to allocated memory
 void copy_value(void* dest, void* src, nodeType_t type) {
-    if (type == CHAR) {
+    if (type == LINKEDLIST_CHAR) {
         strcpy(dest, src);
     
-    } else if (type == INT) {
+    } else if (type == LINKEDLIST_INT) {
         *(int*)dest = *(int*)src;
     
-    } else if (type == DOUBLE) {
+    } else if (type == LINKEDLIST_DOUBLE) {
         *(double*)dest = *(double*)src;
     }
 }
@@ -46,15 +46,15 @@ void linkedlist_print(node_t* head) {
 	while (current != NULL) {
 
         switch(current->type) {
-            case INT:
+            case LINKEDLIST_INT:
                 printf("%d\n", *(int*)current->val);
                 break;
 
-            case CHAR:
+            case LINKEDLIST_CHAR:
                 printf("%s\n", (char*)current->val);
                 break;
 
-            case DOUBLE:
+            case LINKEDLIST_DOUBLE:
                 printf("%f\n", *(double*)current->val);
                 break;
         }
@@ -70,15 +70,15 @@ int check_equality(void* value, node_t* current) {
     }
 
     switch(current->type) {
-        case INT: {
+        case LINKEDLIST_INT: {
             return (*(int*)value == *(int*)current->val);
             break;
         }
-        case CHAR: {
+        case LINKEDLIST_CHAR: {
             return (strcmp(current->val, value) == 0);
             break;
         }
-        case DOUBLE: {
+        case LINKEDLIST_DOUBLE: {
             return (*(double*)value == *(double*)current->val);
             break;
         }
