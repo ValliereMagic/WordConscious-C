@@ -2,6 +2,7 @@
 #include "sodium.h"
 #include <string.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 #ifdef _WIN32
 	#include <windows.h>
@@ -13,9 +14,12 @@
 #define MAX_WORD_LENGTH 128
 
 typedef struct {
-	node_t* wordsCurrent;
+	node_t* wordsList;
+	node_t* resultWords;
+	node_t* charsToContain;
 	int wordsToCheck;
-	
+	int* numberOfWords;
+	pthread_mutex_t* wordsMutex;
 } thread_data_t;
 
 //read all the words from the lines of the words file
@@ -150,9 +154,15 @@ int get_num_cpu_cores(void) {
 //get the closest number of threads to the number of
 //processors that divides evenly into the number of
 //words in the words file.
-int get_thread_number(int numProcessors) {
+//returns -1 on failure.
+int get_thread_number() {
 	int possibleThreadValues[] = {1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30};
-
+	int numProcessors = get_num_cpu_cores();
+	
+	if (numProcessors <= 0) {
+		return -1;
+	}
+	
 	int distance = abs(possibleThreadValues[0] - numProcessors);
 	int idx = 0;
 
@@ -167,19 +177,153 @@ int get_thread_number(int numProcessors) {
 	return possibleThreadValues[idx];
 }
 
+//only allow a word to be added to the word list
+//while it has less words than the number of words
+//we were asked to find.
+int update_word_list(node_t* list, int* numberOfWords, char* word) {
+	if (numberOfWords == NULL) {
+		fprintf(stderr, "Error, number of words passed to searcher thread is NULL\n");
+		return 0;
+	}
+	
+	if (list == NULL) {
+		list = linkedlist_create(word, LINKEDLIST_CHAR);
+		return 1;
+	
+	} else if (linkedlist_size(list) < *numberOfWords) {
+		linkedlist_add(list, word, LINKEDLIST_CHAR);
+		return 1;
+	}
+
+	return 0;
+}
+
+//keep removing characters from characterRegex as those characters
+//are found in word. When the regex runs out of characters, or the
+//characterRegex doesn't contain a character that the word has,
+//the word is determined to be invalid.
+int char_list_contains_word(node_t* charsToContain, char* word,
+		int currentWordLength) {
+	int valid = 1;
+	node_t* characterRegex = linkedlist_clone(charsToContain);
+	for (int i = 0; i < currentWordLength; i++) {
+
+		char currentChar[2];
+		currentChar[0] = word[i];
+		currentChar[1] = '\0';
+		int index;
+		if (((index = linkedlist_indexOf(currentChar, characterRegex,
+				LINKEDLIST_CHAR)) != -1) && valid) {
+			linkedlist_removeAt(characterRegex, index);
+		} else {
+			valid = 0;
+		}
+	}
+	linkedlist_delete(characterRegex);
+	if (valid) {
+		printf("Found Valid Word: %s\n", word);
+	}
+	return valid;
+}
+
+//Search through from the node passed in wordsList until
+//the number of words to check has been reached.
+//make sure that each of the words are made up of the
+//characters passed in charsToContain using
+//char_list_contains_word()
+//
+//if a word is determined to be valid, lock the mutex, 
+//and try to add it to the list. If enough words have
+//already been found, this will fail and return 0.
+//then the loop will exit, and the thread will stop.
+void* word_searcher_thread(void* arg) {
+	thread_data_t* working_data = arg;
+	node_t* resultWords = working_data->resultWords;
+	node_t* wordsList = working_data->wordsList;
+	node_t* charsToContain = working_data->charsToContain;
+	pthread_mutex_t* wordsMutex = working_data->wordsMutex;
+	int* numberOfWords = working_data->numberOfWords;
+	int counter = 0;
+	
+	while ((wordsList != NULL) &&
+			(counter < working_data->wordsToCheck)) {
+		
+		char* currentWordToCheck = wordsList->val;
+		int currentWordLength = strlen(currentWordToCheck);
+		if ((currentWordLength <= linkedlist_size(charsToContain)) &&
+				(currentWordLength >= 3)) {
+
+			if (char_list_contains_word(charsToContain, currentWordToCheck, currentWordLength)) {
+				pthread_mutex_lock(wordsMutex);
+				int success = update_word_list(resultWords, numberOfWords,
+						currentWordToCheck);
+				pthread_mutex_unlock(wordsMutex);
+
+				if (!success) {
+					break;
+				}
+			}
+		}
+			
+		wordsList = wordsList->next;
+		counter++;
+	}
+
+}
+
 //find words from the passed list made up only of the list
 // of characters passed.
 node_t* find_words_from_chars(node_t* characters, int numberOfWords, 
 		node_t* wordList) {
 	
-	int numProcessors = get_num_cpu_cores();
+	int numThreads = get_thread_number();
+	printf("Number of threads: %d\n", numThreads);
 
 	//fail if can't find number of processors.
-	if (numProcessors < 0) {
+	if (numThreads < 0) {
+		fprintf(stderr, "Unable to find the number of online processors.\n");
 		return NULL;
 	}
 
-	
+	pthread_mutex_t wordsMutex = PTHREAD_MUTEX_INITIALIZER;
+	node_t* resultWords = NULL;
 
-	return NULL;
+	int startValue = 0;
+	int incrementValue = linkedlist_size(wordList) / numThreads;
+
+	pthread_t threads[numThreads];
+	thread_data_t* threadData[numThreads];
+
+	for (int i = 0; i < numThreads; i++) {
+		thread_data_t* currentData = malloc(sizeof(thread_data_t));
+		threadData[i] = currentData;
+		int threadCreationSuccess;
+
+		if (currentData == NULL) {
+			fprintf(stderr, "The system is out of memory!");
+			return NULL;
+		}
+
+		currentData->wordsList = linkedlist_get(wordList, startValue);
+		currentData->resultWords = resultWords;
+		currentData->charsToContain = characters;
+		currentData->wordsToCheck = startValue + incrementValue - 1;
+		currentData->numberOfWords = &numberOfWords;
+		currentData->wordsMutex = &wordsMutex;
+
+		if ((threadCreationSuccess = pthread_create(&threads[i], NULL,
+				&word_searcher_thread, currentData))) {
+			
+			fprintf(stderr, "Thread Creation Failed: %d", threadCreationSuccess);
+		}
+
+		startValue = startValue + incrementValue;
+	}
+
+	for (int i = 0; i < numThreads; i++) {
+		pthread_join(threads[i], NULL);
+		free(threadData[i]);
+	}
+
+	return resultWords;
 }
