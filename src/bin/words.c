@@ -180,20 +180,25 @@ int get_thread_number() {
 //only allow a word to be added to the word list
 //while it has less words than the number of words
 //we were asked to find.
-int update_word_list(node_t* list, int* numberOfWords, char* word) {
+int update_word_list(node_t** list, int* numberOfWords, char* word) {
 	if (numberOfWords == NULL) {
 		fprintf(stderr, "Error, number of words passed to searcher thread is NULL\n");
 		return 0;
 	}
+
+	printf("Attempting to add word %s\n", word);
 	
-	if (list == NULL) {
-		list = linkedlist_create(word, LINKEDLIST_CHAR);
+	if (*list == NULL) {
+		*list = linkedlist_create(word, LINKEDLIST_CHAR);
 		return 1;
 	
-	} else if (linkedlist_size(list) < *numberOfWords) {
-		linkedlist_add(list, word, LINKEDLIST_CHAR);
+	} else if (linkedlist_size(*list) < *numberOfWords) {
+		linkedlist_add(*list, word, LINKEDLIST_CHAR);
 		return 1;
 	}
+
+	printf("printing word list:\n");
+	linkedlist_print(*list);
 
 	return 0;
 }
@@ -204,6 +209,7 @@ int update_word_list(node_t* list, int* numberOfWords, char* word) {
 //the word is determined to be invalid.
 int char_list_contains_word(node_t* charsToContain, char* word,
 		int currentWordLength) {
+	
 	int valid = 1;
 	node_t* characterRegex = linkedlist_clone(charsToContain);
 	for (int i = 0; i < currentWordLength; i++) {
@@ -245,6 +251,10 @@ void* word_searcher_thread(void* arg) {
 	int* numberOfWords = working_data->numberOfWords;
 	int counter = 0;
 	
+	//loop through each of the words assigned in working_data
+	//and check their validity considering the characters passed
+	//that the words need to contain.
+	//if it is valid add the word to the result word list.
 	while ((wordsList != NULL) &&
 			(counter < working_data->wordsToCheck)) {
 		
@@ -252,10 +262,12 @@ void* word_searcher_thread(void* arg) {
 		int currentWordLength = strlen(currentWordToCheck);
 		if ((currentWordLength <= linkedlist_size(charsToContain)) &&
 				(currentWordLength >= 3)) {
-
+			
+			//check if the word is valid considering the current charsToContain
+			//if valid, add to the result word list.
 			if (char_list_contains_word(charsToContain, currentWordToCheck, currentWordLength)) {
 				pthread_mutex_lock(wordsMutex);
-				int success = update_word_list(resultWords, numberOfWords,
+				int success = update_word_list(&resultWords, numberOfWords,
 						currentWordToCheck);
 				pthread_mutex_unlock(wordsMutex);
 
@@ -276,6 +288,8 @@ void* word_searcher_thread(void* arg) {
 node_t* find_words_from_chars(node_t* characters, int numberOfWords, 
 		node_t* wordList) {
 	
+	//get the number of threads to generate based on the number of
+	//online processors on the system.
 	int numThreads = get_thread_number();
 	printf("Number of threads: %d\n", numThreads);
 
@@ -291,6 +305,8 @@ node_t* find_words_from_chars(node_t* characters, int numberOfWords,
 	int startValue = 0;
 	int incrementValue = linkedlist_size(wordList) / numThreads;
 
+	//threads holds each generated thread that needs to be joined back
+	//threadData holds allocated work packages for each thread to work on.
 	pthread_t threads[numThreads];
 	thread_data_t* threadData[numThreads];
 
@@ -304,6 +320,8 @@ node_t* find_words_from_chars(node_t* characters, int numberOfWords,
 			return NULL;
 		}
 
+		//assign values to the currentData package that is destined
+		//for a thread.
 		currentData->wordsList = linkedlist_get(wordList, startValue);
 		currentData->resultWords = resultWords;
 		currentData->charsToContain = characters;
@@ -311,6 +329,7 @@ node_t* find_words_from_chars(node_t* characters, int numberOfWords,
 		currentData->numberOfWords = &numberOfWords;
 		currentData->wordsMutex = &wordsMutex;
 
+		//create the thread to handle the currentData
 		if ((threadCreationSuccess = pthread_create(&threads[i], NULL,
 				&word_searcher_thread, currentData))) {
 			
@@ -320,6 +339,8 @@ node_t* find_words_from_chars(node_t* characters, int numberOfWords,
 		startValue = startValue + incrementValue;
 	}
 
+	//join back all the threads,
+	//and free the the threadData objects allocated.
 	for (int i = 0; i < numThreads; i++) {
 		pthread_join(threads[i], NULL);
 		free(threadData[i]);
