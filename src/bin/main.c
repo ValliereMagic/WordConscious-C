@@ -12,6 +12,7 @@
 #include "tests.h"
 #include "config.h"
 
+
 int main(void) {
 	test_list();
 	test_words_read();
@@ -20,5 +21,6 @@ int main(void) {
 	linkedlist_print(characters);
 	printf("Amount of characters returned: %d\n", linkedlist_size(characters));
 	linkedlist_delete(characters);
+
 	return 0;
 }
