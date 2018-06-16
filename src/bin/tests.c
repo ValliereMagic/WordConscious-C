@@ -79,3 +79,23 @@ void test_words_read(void) {
 		linkedlist_delete(words);
 	}
 }
+
+void test_character_gen(void) {
+	node_t* characters = generate_Guess_Characters(8);
+	linkedlist_print(characters);
+	printf("Amount of characters returned: %d\n", linkedlist_size(characters));
+	linkedlist_delete(characters);
+}
+
+void test_words_gen_from_chars(void) {
+	node_t* words = read_Words();
+	node_t* characters = generate_Guess_Characters(8);
+	node_t* resultWords = find_words_from_chars(characters, 5, words);
+
+	linkedlist_print(characters);
+	linkedlist_print(resultWords);
+
+	linkedlist_delete(words);
+	linkedlist_delete(characters);
+	linkedlist_delete(resultWords);
+}
