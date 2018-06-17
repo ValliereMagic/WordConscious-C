@@ -278,7 +278,7 @@ void* word_searcher_thread(void* arg) {
 			
 		wordsList = wordsList->next;
 	}
-
+	return NULL;
 }
 
 //find words from the passed list made up only of the list
