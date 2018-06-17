@@ -2,7 +2,7 @@
 #define LINKEDLIST_H
 
 typedef enum {
-    INT, CHAR, DOUBLE
+    LINKEDLIST_INT, LINKEDLIST_CHAR, LINKEDLIST_DOUBLE
 } nodeType_t;
 
 typedef struct node {

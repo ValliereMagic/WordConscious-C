@@ -35,6 +35,10 @@ AC_PROG_CC
 
 #check for libsodium
 AC_CHECK_LIB([sodium], [sodium_init], [WC_libflags=-lsodium], [AC_MSG_ERROR([libsodium not found!])])
+
+#check for pthread
+AC_CHECK_LIB([pthread], [pthread_create], [WC_libflags="$WC_libflags -lpthread"], [AC_MSG_ERROR([pthread not found!])])
+
 AC_SUBST(WC_libflags)
 
 # Checks for header files.
