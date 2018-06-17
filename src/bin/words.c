@@ -209,20 +209,32 @@ int char_list_contains_word(node_t* charsToContain, char* word,
 	
 	int valid = 1;
 	node_t* characterRegex = linkedlist_clone(charsToContain);
+	
 	for (int i = 0; i < currentWordLength; i++) {
 
 		char currentChar[2];
 		currentChar[0] = word[i];
 		currentChar[1] = '\0';
-		int index;
-		if (((index = linkedlist_indexOf(currentChar, characterRegex,
-				LINKEDLIST_CHAR)) != -1) && valid) {
-			linkedlist_removeAt(characterRegex, index);
+		
+		int index = linkedlist_indexOf(currentChar, characterRegex, LINKEDLIST_CHAR);
+
+		if ((index != -1) && (valid)) {
+			
+			if (index != 0) {
+				linkedlist_removeAt(characterRegex, index);
+			
+			} else {
+				linkedlist_set(characterRegex, "\0", index, LINKEDLIST_CHAR);
+			}
+		
 		} else {
 			valid = 0;
+			break;
 		}
 	}
+	
 	linkedlist_delete(characterRegex);
+	
 	return valid;
 }
 
