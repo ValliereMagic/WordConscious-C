@@ -3,4 +3,6 @@
 
 void test_list(void);
 void test_words_read(void);
+void test_character_gen(void);
+void test_words_gen_from_chars(void);
 #endif

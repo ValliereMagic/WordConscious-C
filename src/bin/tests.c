@@ -6,7 +6,7 @@
 #include "words.h"
 
 /*
-* Test the functions of the list
+* Test program functions.
 */
 
 void test_list(void) {
@@ -14,17 +14,17 @@ void test_list(void) {
     printf("\n\n===Testing LinkedList===\n\n");
 
 	char helloList[sizeof("Hello World") + 1] = "Hello World";
-	node_t* listHead = linkedlist_create(helloList, CHAR);
+	node_t* listHead = linkedlist_create(helloList, LINKEDLIST_CHAR);
 
 	int test = 6;
-	linkedlist_add(listHead, &test, INT);
+	linkedlist_add(listHead, &test, LINKEDLIST_INT);
 
 	double testDouble = 3.14159265;
-	linkedlist_add(listHead, &testDouble, DOUBLE);
+	linkedlist_add(listHead, &testDouble, LINKEDLIST_DOUBLE);
 
-	printf("Index of 6 in the list: %d\n", linkedlist_indexOf(&test, listHead, INT));
-	printf("Index of \"Hello World\" in the list: %d\n", linkedlist_indexOf(helloList, listHead, CHAR));
-	printf("Index of PI in the list: %d\n", linkedlist_indexOf(&testDouble, listHead, DOUBLE));
+	printf("Index of 6 in the list: %d\n", linkedlist_indexOf(&test, listHead, LINKEDLIST_INT));
+	printf("Index of \"Hello World\" in the list: %d\n", linkedlist_indexOf(helloList, listHead, LINKEDLIST_CHAR));
+	printf("Index of PI in the list: %d\n", linkedlist_indexOf(&testDouble, listHead, LINKEDLIST_DOUBLE));
 
 	node_t* testNode = linkedlist_get(listHead, 1);
 	printf("Value at %d: %d\n", 1, *(int*)testNode->val);
@@ -45,14 +45,14 @@ void test_list(void) {
 	printf("===printing list 2nd time===\n");
 	linkedlist_print(listHead);
 
-	printf("Remove using value code: %d\n", linkedlist_removeValue(listHead, &testDouble, DOUBLE));
+	printf("Remove using value code: %d\n", linkedlist_removeValue(listHead, &testDouble, LINKEDLIST_DOUBLE));
 
 	printf("===printing list 3rd time===\n");
 	linkedlist_print(listHead);
 
 	int testInt = 64;
 
-	linkedlist_set(listHead, &testInt, 0, INT);
+	linkedlist_set(listHead, &testInt, 0, LINKEDLIST_INT);
 
 	printf("===printing list 4th time===\n");
 	linkedlist_print(listHead);
@@ -66,7 +66,7 @@ void test_words_read(void) {
 	
 	if (words != NULL) {
 		printf("%d\n", linkedlist_size(words));
-		printf("Index of fish: %d\n", linkedlist_indexOf("fish", words, CHAR));
+		printf("Index of fish: %d\n", linkedlist_indexOf("fish", words, LINKEDLIST_CHAR));
 		printf("\n");
 		
 		printf("Enter a 2 digit integer => ");
@@ -78,4 +78,26 @@ void test_words_read(void) {
 		
 		linkedlist_delete(words);
 	}
+}
+
+void test_character_gen(void) {
+	node_t* characters = generate_Guess_Characters(8);
+	linkedlist_print(characters);
+	printf("Amount of characters returned: %d\n", linkedlist_size(characters));
+	linkedlist_delete(characters);
+}
+
+void test_words_gen_from_chars(void) {
+	node_t* words = read_Words();
+	node_t* characters = generate_Guess_Characters(8);
+	node_t* resultWords = find_words_from_chars(characters, 5, words);
+
+	printf("Characters:\n");
+	linkedlist_print(characters);
+	printf("Found Words:\n");
+	linkedlist_print(resultWords);
+
+	linkedlist_delete(words);
+	linkedlist_delete(characters);
+	linkedlist_delete(resultWords);
 }

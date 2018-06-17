@@ -10,30 +10,33 @@ void delete_node_t(node_t* node);
 void* allocate_memory(void* value, nodeType_t type) {
     
     if (value == NULL) {
+        fprintf(stderr, "Error. allocate_memory() passed NULL value to allocate memory for.\n");
         return NULL;
     }
     
-    if (type == CHAR) {
+    if (type == LINKEDLIST_CHAR) {
         return malloc(sizeof(char) * (strlen(value) + 1));
     
-    } else if (type == INT) {
+    } else if (type == LINKEDLIST_INT) {
         return malloc(sizeof(int));
     
-    } else if (type == DOUBLE) {
+    } else if (type == LINKEDLIST_DOUBLE) {
         return malloc(sizeof(double));
     }
+
+    fprintf(stderr, "Error. Unknown type passed to allocate_memory()\n");
     return NULL;
 }
 
 //private function to copy values passed to allocated memory
 void copy_value(void* dest, void* src, nodeType_t type) {
-    if (type == CHAR) {
+    if (type == LINKEDLIST_CHAR) {
         strcpy(dest, src);
     
-    } else if (type == INT) {
+    } else if (type == LINKEDLIST_INT) {
         *(int*)dest = *(int*)src;
     
-    } else if (type == DOUBLE) {
+    } else if (type == LINKEDLIST_DOUBLE) {
         *(double*)dest = *(double*)src;
     }
 }
@@ -46,15 +49,15 @@ void linkedlist_print(node_t* head) {
 	while (current != NULL) {
 
         switch(current->type) {
-            case INT:
+            case LINKEDLIST_INT:
                 printf("%d\n", *(int*)current->val);
                 break;
 
-            case CHAR:
+            case LINKEDLIST_CHAR:
                 printf("%s\n", (char*)current->val);
                 break;
 
-            case DOUBLE:
+            case LINKEDLIST_DOUBLE:
                 printf("%f\n", *(double*)current->val);
                 break;
         }
@@ -66,23 +69,25 @@ void linkedlist_print(node_t* head) {
 //return 1 if equal, 0 if not.
 int check_equality(void* value, node_t* current) {
     if (current == NULL) {
+        fprintf(stderr, "Error. NULL node passed to check_equality().\n");
         return 0;
     }
 
     switch(current->type) {
-        case INT: {
+        case LINKEDLIST_INT: {
             return (*(int*)value == *(int*)current->val);
             break;
         }
-        case CHAR: {
+        case LINKEDLIST_CHAR: {
             return (strcmp(current->val, value) == 0);
             break;
         }
-        case DOUBLE: {
+        case LINKEDLIST_DOUBLE: {
             return (*(double*)value == *(double*)current->val);
             break;
         }
     }
+    fprintf(stderr, "Error. Unknown type passed to check_equality()\n");
     return 0;
 }
 
@@ -199,12 +204,14 @@ int linkedlist_set(node_t* head, void* value, int index, nodeType_t type) {
     node_t* current = linkedlist_get(head, index);
 
     if (current == NULL) {
+        fprintf(stderr, "linklist_get() returned NULL current in linkedlist_set(). Index out of bounds.\n");
         return -1;
     }
 
     void* new_val = allocate_memory(value, type);
 
     if (new_val == NULL) {
+        fprintf(stderr, "Error. System out of memory.\n");
         return -1;
     }
 
@@ -228,6 +235,7 @@ node_t* linkedlist_create(void* firstVal, nodeType_t type) {
         void* new_val = allocate_memory(firstVal, type);
 
         if (new_val == NULL) {
+            fprintf(stderr, "Error. System out of memory.\n");
             return NULL;
         }
         //copy passed value to new_val
@@ -250,6 +258,7 @@ node_t* linkedlist_clone(node_t* head) {
     //make sure a NULL list was not passed
     //to be copied.
     if (current == NULL) {
+        fprintf(stderr, "Error. Attempting to clone NULL linked list.\n");
         return NULL;
     }
 
@@ -258,6 +267,7 @@ node_t* linkedlist_clone(node_t* head) {
 
     //make sure that the creation of the new list didn't fail
     if (new == NULL) {
+        fprintf(stderr, "Error. Failed to make new list in linkedlist_clone().\n");
         return NULL;
     }
 
@@ -293,6 +303,7 @@ int linkedlist_add(node_t* head, void* val, nodeType_t type) {
     
     //make sure system is not out of memory
     if (current->next == NULL) {
+        fprintf(stderr, "Error. System out of memory.\n");
         return -1;
     }
 
@@ -300,6 +311,7 @@ int linkedlist_add(node_t* head, void* val, nodeType_t type) {
     void* new_val = allocate_memory(val, type);
 
     if (new_val == NULL) {
+        fprintf(stderr, "Error. System out of memory.\n");
         return -1;
     }
     
