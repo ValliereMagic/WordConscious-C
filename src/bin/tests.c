@@ -6,7 +6,7 @@
 #include "words.h"
 
 /*
-* Test the functions of the list
+* Test program functions.
 */
 
 void test_list(void) {
@@ -92,7 +92,9 @@ void test_words_gen_from_chars(void) {
 	node_t* characters = generate_Guess_Characters(8);
 	node_t* resultWords = find_words_from_chars(characters, 5, words);
 
+	printf("Characters:\n");
 	linkedlist_print(characters);
+	printf("Found Words:\n");
 	linkedlist_print(resultWords);
 
 	linkedlist_delete(words);
