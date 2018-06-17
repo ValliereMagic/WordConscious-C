@@ -32,6 +32,12 @@ void test_list(void) {
 	printf("===printing list 1st time===\n");
 	linkedlist_print(listHead);
 
+	printf("===Shuffling the list===\n");
+	linkedlist_shuffle(listHead);
+
+	printf("===Printing shuffled list===\n");
+	linkedlist_print(listHead);
+
 	printf("===Cloning list===\n");
 	node_t* clone_node = linkedlist_clone(listHead);
 
