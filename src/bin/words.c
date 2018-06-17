@@ -13,9 +13,9 @@
 
 #define MAX_WORD_LENGTH 128
 
-typedef struct {
+typedef struct {	
 	node_t* wordsList;
-	node_t* resultWords;
+	node_t** resultWords;
 	node_t* charsToContain;
 	int wordsToCheck;
 	int* numberOfWords;
@@ -31,6 +31,7 @@ node_t* read_Words(void) {
 
 	//make sure the file exists.
 	if (!file_ptr) {
+		fprintf(stderr, "Error, cannot find words file.\n");
 		return NULL;
 	}
 
@@ -60,6 +61,7 @@ node_t* read_Words(void) {
 node_t* generate_Guess_Characters(int number_Of_Chars) {
 
 	if (sodium_init() < 0) {
+		fprintf(stderr, "Error. Unable to initiate libsodium\n");
 		return NULL;
 	}
 
@@ -185,8 +187,6 @@ int update_word_list(node_t** list, int* numberOfWords, char* word) {
 		fprintf(stderr, "Error, number of words passed to searcher thread is NULL\n");
 		return 0;
 	}
-
-	printf("Attempting to add word %s\n", word);
 	
 	if (*list == NULL) {
 		*list = linkedlist_create(word, LINKEDLIST_CHAR);
@@ -196,9 +196,6 @@ int update_word_list(node_t** list, int* numberOfWords, char* word) {
 		linkedlist_add(*list, word, LINKEDLIST_CHAR);
 		return 1;
 	}
-
-	printf("printing word list:\n");
-	linkedlist_print(*list);
 
 	return 0;
 }
@@ -226,9 +223,6 @@ int char_list_contains_word(node_t* charsToContain, char* word,
 		}
 	}
 	linkedlist_delete(characterRegex);
-	if (valid) {
-		printf("Found Valid Word: %s\n", word);
-	}
 	return valid;
 }
 
@@ -244,33 +238,38 @@ int char_list_contains_word(node_t* charsToContain, char* word,
 //then the loop will exit, and the thread will stop.
 void* word_searcher_thread(void* arg) {
 	thread_data_t* working_data = arg;
-	node_t* resultWords = working_data->resultWords;
+	node_t** resultWords = working_data->resultWords;
 	node_t* wordsList = working_data->wordsList;
 	node_t* charsToContain = working_data->charsToContain;
 	pthread_mutex_t* wordsMutex = working_data->wordsMutex;
 	int* numberOfWords = working_data->numberOfWords;
-	int counter = 0;
 	
 	//loop through each of the words assigned in working_data
 	//and check their validity considering the characters passed
 	//that the words need to contain.
 	//if it is valid add the word to the result word list.
-	while ((wordsList != NULL) &&
-			(counter < working_data->wordsToCheck)) {
-		
+	for (int i = 0; i < working_data->wordsToCheck; i++) {
+		if (wordsList == NULL) {
+			fprintf(stderr, "Error. word searcher thread passed NULL word list.\n");
+			break;
+		}
+
 		char* currentWordToCheck = wordsList->val;
 		int currentWordLength = strlen(currentWordToCheck);
+		
 		if ((currentWordLength <= linkedlist_size(charsToContain)) &&
 				(currentWordLength >= 3)) {
-			
+
 			//check if the word is valid considering the current charsToContain
 			//if valid, add to the result word list.
 			if (char_list_contains_word(charsToContain, currentWordToCheck, currentWordLength)) {
 				pthread_mutex_lock(wordsMutex);
-				int success = update_word_list(&resultWords, numberOfWords,
+				
+				int success = update_word_list(resultWords, numberOfWords,
 						currentWordToCheck);
+				
 				pthread_mutex_unlock(wordsMutex);
-
+				
 				if (!success) {
 					break;
 				}
@@ -278,20 +277,18 @@ void* word_searcher_thread(void* arg) {
 		}
 			
 		wordsList = wordsList->next;
-		counter++;
 	}
 
 }
 
 //find words from the passed list made up only of the list
 // of characters passed.
-node_t* find_words_from_chars(node_t* characters, int numberOfWords, 
+node_t* find_words_from_chars(node_t* characters, int numberOfWords,
 		node_t* wordList) {
 	
 	//get the number of threads to generate based on the number of
 	//online processors on the system.
 	int numThreads = get_thread_number();
-	printf("Number of threads: %d\n", numThreads);
 
 	//fail if can't find number of processors.
 	if (numThreads < 0) {
@@ -323,9 +320,9 @@ node_t* find_words_from_chars(node_t* characters, int numberOfWords,
 		//assign values to the currentData package that is destined
 		//for a thread.
 		currentData->wordsList = linkedlist_get(wordList, startValue);
-		currentData->resultWords = resultWords;
+		currentData->resultWords = &resultWords;
 		currentData->charsToContain = characters;
-		currentData->wordsToCheck = startValue + incrementValue - 1;
+		currentData->wordsToCheck = incrementValue - 1;
 		currentData->numberOfWords = &numberOfWords;
 		currentData->wordsMutex = &wordsMutex;
 
