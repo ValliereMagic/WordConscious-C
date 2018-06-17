@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "sodium.h"
 
 #include "linkedlist.h"
 
@@ -284,6 +285,50 @@ node_t* linkedlist_clone(node_t* head) {
     }
 
     return new;
+
+}
+
+//return the same linked list shuffled
+//in a random order.
+void linkedlist_shuffle(node_t* head) {
+    
+    if (sodium_init() < 0) {
+        fprintf(stderr, "Error. failed to initiate libsodium in linkedlist_shuffle().\n");
+        return;
+    }
+
+    node_t* current = head;
+    
+    int sizeOfCurrent = linkedlist_size(current);
+    
+    for (int i = sizeOfCurrent - 1; i > 0; i--) {
+        int index = randombytes_uniform(i + 1);
+
+        //get nodes to swap
+        node_t* temp = linkedlist_get(current, index);
+        node_t* currentIndex = linkedlist_get(current, i);
+
+        if (temp == NULL || currentIndex == NULL) {
+            fprintf(stderr, "Error. linkedlist_get() has returned null in linkedlist_shuffle()");
+            return;
+        }
+
+        nodeType_t tempType = temp->type;
+        
+        //make temporary copy of randomly found type
+        void* tempValue = allocate_memory(temp->val, tempType);
+        copy_value(tempValue, temp->val, tempType);
+        
+        //set randomly located value to current for loop index
+        linkedlist_set(temp, currentIndex->val, 0, currentIndex->type);
+        
+        //set current index to the value that was at the randomly
+        //located index
+        linkedlist_set(currentIndex, tempValue, 0, tempType);
+
+        //deallocate the temporary value
+        free(tempValue);
+    }
 
 }
 
