@@ -218,7 +218,7 @@ int char_list_contains_word(node_t* charsToContain, char* word,
 		
 		int index = linkedlist_indexOf(currentChar, characterRegex, LINKEDLIST_CHAR);
 
-		if ((index != -1) && (valid)) {
+		if (index != -1) {
 			
 			if (index != 0) {
 				linkedlist_removeAt(characterRegex, index);
