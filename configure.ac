@@ -39,8 +39,12 @@ AC_CHECK_LIB([sodium], [sodium_init], [WC_sodium_flags=-lsodium], [AC_MSG_ERROR(
 #check for pthread
 AC_CHECK_LIB([pthread], [pthread_create], [WC_pthread_flags=-lpthread], [AC_MSG_ERROR([pthread not found!])])
 
+#check for libconfig
+AC_CHECK_LIB([config], [config_init], [WC_libconfig_flags=-lconfig], [AC_MSG_ERROR[libconfig not found!]])
+
 AC_SUBST(WC_sodium_flags)
 AC_SUBST(WC_pthread_flags)
+AC_SUBST(WC_libconfig_flags)
 
 # Checks for header files.
 AC_CHECK_HEADERS([string.h])
