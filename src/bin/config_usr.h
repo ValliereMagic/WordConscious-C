@@ -3,7 +3,9 @@
 #define CONFIG_USR_H
 
 //retrieves user configuration from config file.
-//config_t MUST BE DESTROYED USING config_destroy().
-config_t get_user_config(void);
+//returned config must be deleted using delete_user_config().
+config_t* get_user_config(void);
+
+void delete_user_config(config_t* config);
 
 #endif
