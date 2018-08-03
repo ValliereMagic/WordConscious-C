@@ -18,5 +18,6 @@ int main(void) {
 	test_words_read();
 	test_character_gen();
 	test_words_gen_from_chars();
+	test_config_file();
 	return 0;
 }

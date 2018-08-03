@@ -4,6 +4,8 @@
 
 #include "linkedlist.h"
 #include "words.h"
+#include "libconfig.h"
+#include "config_usr.h"
 
 /*
 * Test program functions.
@@ -106,4 +108,30 @@ void test_words_gen_from_chars(void) {
 	linkedlist_delete(words);
 	linkedlist_delete(characters);
 	linkedlist_delete(resultWords);
+}
+
+void test_config_file(void) {
+	config_t* user_config = get_user_config();
+	
+	int words_per_set;
+	config_lookup_int(user_config, "amount_of_words_per_set", &words_per_set);
+	printf("Words per set: %d\n", words_per_set);
+
+	int number_of_letters_set;
+	config_lookup_int(user_config, "number_of_letters_per_set", &number_of_letters_set);
+	printf("Letters per set: %d\n", number_of_letters_set);
+
+	int minimum_word_length;
+	config_lookup_int(user_config, "minimum_word_length", &minimum_word_length);
+	printf("Minimum word length: %d\n", minimum_word_length);
+
+	int maximum_word_length;
+	config_lookup_int(user_config, "maximum_word_length", &maximum_word_length);
+	printf("Maximum word length: %d\n", maximum_word_length);
+
+	int min_left_hint_reveal;
+	config_lookup_int(user_config, "min_left_hint_reveal", &min_left_hint_reveal);
+	printf("minimum left of word using hints: %d\n", min_left_hint_reveal);
+
+	delete_user_config(user_config);
 }
