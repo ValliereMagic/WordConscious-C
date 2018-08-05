@@ -6,6 +6,7 @@
 #include "words.h"
 #include "libconfig.h"
 #include "config_usr.h"
+#include "hints.h"
 
 /*
 * Test program functions.
@@ -134,4 +135,18 @@ void test_config_file(void) {
 	printf("minimum left of word using hints: %d\n", min_left_hint_reveal);
 
 	delete_user_config(user_config);
+}
+
+void test_hints(void) {
+	hint_data_t* hints = create_hint_type();
+	hints->min_chars_unrevealed = 2;
+	node_t* words = read_Words();
+	
+	for (int i = 0; i < 12; i++) {
+		get_hint(hints, words);
+
+		printf("word: %s\n", hints->result);
+	}
+	delete_hint_type(hints);
+	linkedlist_delete(words);
 }
