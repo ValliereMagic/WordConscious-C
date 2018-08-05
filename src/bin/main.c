@@ -19,5 +19,6 @@ int main(void) {
 	test_character_gen();
 	test_words_gen_from_chars();
 	test_config_file();
+	test_hints();
 	return 0;
 }
