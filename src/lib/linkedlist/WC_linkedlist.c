@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "sodium.h"
 
-#include "linkedlist.h"
+#include "WC_linkedlist.h"
 
 void delete_node_t(node_t* node);
 
