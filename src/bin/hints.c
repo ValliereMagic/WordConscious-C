@@ -1,7 +1,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "linkedlist.h"
+#include "WC_linkedlist.h"
 #include "hints.h"
 #include <limits.h>
 #include "sodium.h"
@@ -113,7 +113,7 @@ void get_hint(hint_data_t* hint_data, node_t* guessable_words) {
         strcpy(current_guess_word, new_word);
         
     }
-    
+
     int current_hint_word_length = strlen(current_guess_word);
     char hint_string[current_hint_word_length + 1];
     int min_chars_unrevealed = hint_data->min_chars_unrevealed;
