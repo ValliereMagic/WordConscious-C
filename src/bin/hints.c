@@ -3,7 +3,6 @@
 #include <string.h>
 #include "WC_linkedlist.h"
 #include "hints.h"
-#include <limits.h>
 #include "sodium.h"
 
 //create a new hint type, initialize the default values
