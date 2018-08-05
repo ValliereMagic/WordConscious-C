@@ -10,7 +10,7 @@ WordConscious_SOURCES = \
     src/bin/words.c src/bin/words.h \
     src/bin/config_usr.c src/bin/config_usr.h \
     src/bin/hints.c /src/bin/hints.h \
-    src/lib/linkedlist/linkedlist.h
+    src/lib/linkedlist/WC_linkedlist.h
 
 #Link libsodium
 WordConscious_LDADD = libWC_linkedlist.la @WC_sodium_flags@ @WC_pthread_flags@ @WC_libconfig_flags@
@@ -35,7 +35,7 @@ lib_LTLIBRARIES = libWC_linkedlist.la
 
 #Linkedlist Sources
 libWC_linkedlist_la_SOURCES = \
-    src/lib/linkedlist/linkedlist.c src/lib/linkedlist/linkedlist.h
+    src/lib/linkedlist/WC_linkedlist.c src/lib/linkedlist/WC_linkedlist.h
 
 #Linkedlist Version
 libWC_linkedlist_la_LDFLAGS = -version-info 0:0:0 -no-undefined
@@ -43,4 +43,4 @@ libWC_linkedlist_la_LDFLAGS = -version-info 0:0:0 -no-undefined
 libWC_linkedlist_la_LIBADD = @WC_sodium_flags@
 
 #Install linked list headers
-include_HEADERS = src/lib/linkedlist/linkedlist.h
+include_HEADERS = src/lib/linkedlist/WC_linkedlist.h

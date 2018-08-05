@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "linkedlist.h"
+#include "WC_linkedlist.h"
 #include "words.h"
 #include "libconfig.h"
 #include "config_usr.h"

@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 
-#include "linkedlist.h"
+#include "WC_linkedlist.h"
 #include "words.h"
 #include "tests.h"
 #include "config.h"
