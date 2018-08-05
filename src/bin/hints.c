@@ -6,18 +6,27 @@
 #include <limits.h>
 #include "sodium.h"
 
+//create a new hint type, initialize the default values
+//return the new created type
 hint_data_t* create_hint_type(void) {
     hint_data_t* type = malloc(sizeof(hint_data_t));
+    
     if (type == NULL) {
         fprintf(stderr, "Error. System out of memory while allocating new hint_data.\n");
         return NULL;
     }
-    type->current_hint_index = -1;
-    type->chars_revealed = 0;
+
+    //set default values to hint_type.
     type->min_chars_unrevealed = 0;
+    type->current_hint_index = -1;
+    type->current_guess_word = NULL;
+    type->chars_revealed = 0;
+    type->result = NULL;
+    
     return type;
 }
-
+//free the 2 dynamically allocated variables in the hint type,
+//then free the hint data type itself.
 void delete_hint_type(hint_data_t* type) {
     if (type != NULL && type->current_guess_word != NULL
         && type->result != NULL) {
@@ -29,6 +38,7 @@ void delete_hint_type(hint_data_t* type) {
 } 
 
 //returns null on failure
+//retrieve a specific char* from a node_t in a linked list type.
 char* get_char_from_node(node_t* char_to_test) {
     //null checks
         if (char_to_test != NULL) {
@@ -96,50 +106,52 @@ void get_hint(hint_data_t* hint_data, node_t* guessable_words) {
             return;
         }
         //reallocate current_guess_word to the right size, copy in the new guess word.   
-        realloc(current_guess_word, (sizeof(char) * strlen(new_word) + 1));
+        current_guess_word = realloc(current_guess_word, (sizeof(char) * strlen(new_word) + 1));
         if (current_guess_word == NULL) {
             fprintf(stderr, "Error. system out of memory reallocating current_guess_word.\n");
         }
         strcpy(current_guess_word, new_word);
         
     }
+    
     int current_hint_word_length = strlen(current_guess_word);
     char hint_string[current_hint_word_length + 1];
     int min_chars_unrevealed = hint_data->min_chars_unrevealed;
-    
-    //engages if min_chars_unrevealed is disabled.
-    if (min_chars_unrevealed == 0) {
-        min_chars_unrevealed = INT_MAX;
-    }
 
     //reveal one more char of the word than chars_revealed, unless that goes over the
     //minimum amount of characters allowed to be revealed. then null terminate.
     int i = 0;
     for(; i < current_hint_word_length; i++) {
         
-        if (i <= chars_revealed && i < min_chars_unrevealed) {
+        if (i <= chars_revealed && (i < current_hint_word_length - min_chars_unrevealed)) {
             hint_string[i] = current_guess_word[i];
         
         } else {
             hint_string[i] = '*';
         }
     }
-    hint_string[i + 1] = '\0';
 
-    char* result = hint_data->result;
-    
+    //null terminate the hint string.
+    hint_string[i] = '\0';
+
+    //set chars_revealed to record that we have revealed another character of the word
+    //to the user.
+    hint_data->chars_revealed += 1;
+
+    char* result = hint_data->result;    
     char error_string[] = "Error. System out of memory trying to allocate hint result.\n";
     int size_of_result = sizeof(char) * (current_hint_word_length) + 1;
     
     //if result is already allocated, reallocate to the right size. otherwise allocate.
     if (result == NULL) {
         result = malloc(size_of_result);
+        printf("allocating result\n");
         if (result == NULL) {
             fprintf(stderr, error_string);
             return;
         }
     } else {
-        realloc(result, size_of_result);
+        result = realloc(result, size_of_result);
         if (result == NULL) {
             fprintf(stderr, error_string);
             return;
@@ -147,4 +159,5 @@ void get_hint(hint_data_t* hint_data, node_t* guessable_words) {
     }
 
     strcpy(result, hint_string);
+    hint_data->result = result;
 }
