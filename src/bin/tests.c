@@ -145,6 +145,10 @@ void test_hints(void) {
 	for (int i = 0; i < 12; i++) {
 		get_hint(hints, words);
 
+		if (i == 6) {
+			linkedlist_shuffle(words);
+		}
+
 		printf("word: %s\n", hints->result);
 	}
 	delete_hint_type(hints);
