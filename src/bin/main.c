@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 
-#include "linkedlist.h"
+#include "WC_linkedlist.h"
 #include "words.h"
 #include "tests.h"
 #include "config.h"
@@ -19,5 +19,6 @@ int main(void) {
 	test_character_gen();
 	test_words_gen_from_chars();
 	test_config_file();
+	test_hints();
 	return 0;
 }
