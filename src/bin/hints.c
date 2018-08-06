@@ -196,14 +196,20 @@ void get_hint(hint_data_t* hint_data, node_t* guessable_words) {
         
     }
 
+    //find length of current word a hint is being made for,
+    //and create a character array to hold the new hint string
     int current_hint_word_length = strlen(current_guess_word);
     char hint_string[current_hint_word_length + 1];
 
+    //create new obfuscated hint for the user to re-attempt a guess at the word.
     get_hint_string(hint_string, current_guess_word, &hint_data->min_chars_unrevealed,
                     &hint_data->chars_revealed, &current_hint_word_length);
 
+    //allocate memory for the new obfuscated hint string.
     char* result = allocate_result(hint_data->result, &current_hint_word_length);
     
+    //copy the newly made hint string into the result,
+    //and set the result in hint_data.
     strcpy(result, hint_string);
     hint_data->result = result;
 }
