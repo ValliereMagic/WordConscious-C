@@ -40,13 +40,14 @@ void delete_hint_type(hint_data_t* type) {
 //retrieve a specific char* from a node_t in a linked list type.
 char* get_char_from_node(node_t* char_to_test) {
     //null checks
-        if (char_to_test != NULL) {
-            char* internal_char = char_to_test->val;
+    if (char_to_test != NULL) {
+        char* internal_char = char_to_test->val;
             
-            if (internal_char != NULL) {
-                return internal_char;
-            }
+        if (internal_char != NULL) {
+            return internal_char;
         }
+    }
+    return NULL;
 }
 
 //result is stored in hint_data->result
@@ -71,7 +72,7 @@ void get_hint(hint_data_t* hint_data, node_t* guessable_words) {
     char* current_guess_word = hint_data->current_guess_word;
 
     if (current_guess_word == NULL) {
-        current_guess_word = hint_data->current_guess_word = malloc(sizeof(char));
+        hint_data->current_guess_word = current_guess_word = malloc(sizeof(char));
         
         if (current_guess_word == NULL) {
             fprintf(stderr, "Error. System out of memory initializing current_guess_word "
@@ -104,12 +105,17 @@ void get_hint(hint_data_t* hint_data, node_t* guessable_words) {
             fprintf(stderr, "Error. new_word after finding a new word to reveal hints for is NULL.\n");
             return;
         }
+
         //reallocate current_guess_word to the right size, copy in the new guess word.   
-        current_guess_word = realloc(current_guess_word, (sizeof(char) * strlen(new_word) + 1));
+        current_guess_word = realloc(current_guess_word, (sizeof(char) * (strlen(new_word) + 1)));
         if (current_guess_word == NULL) {
             fprintf(stderr, "Error. system out of memory reallocating current_guess_word.\n");
         }
+        
         strcpy(current_guess_word, new_word);
+        
+        //set hint_data guess word to new guess word.
+        hint_data->current_guess_word = current_guess_word;
         
     }
 
@@ -144,19 +150,19 @@ void get_hint(hint_data_t* hint_data, node_t* guessable_words) {
     //if result is already allocated, reallocate to the right size. otherwise allocate.
     if (result == NULL) {
         result = malloc(size_of_result);
-        printf("allocating result\n");
         if (result == NULL) {
-            fprintf(stderr, error_string);
+            fprintf(stderr, "%s", error_string);
             return;
         }
+    
     } else {
         result = realloc(result, size_of_result);
         if (result == NULL) {
-            fprintf(stderr, error_string);
+            fprintf(stderr, "%s", error_string);
             return;
         }
     }
-
+    
     strcpy(result, hint_string);
     hint_data->result = result;
 }
