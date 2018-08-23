@@ -11,7 +11,6 @@
 /*
 * Test program functions.
 */
-
 void test_list(void) {
 
     printf("\n\n===Testing LinkedList===\n\n");
@@ -76,11 +75,11 @@ void test_words_read(void) {
 	if (words != NULL) {
 		printf("%d\n", linkedlist_size(words));
 		printf("Index of fish: %d\n", linkedlist_indexOf("fish", words, LINKEDLIST_CHAR));
-		printf("\n");
+		//printf("\n");
 		
-		printf("Enter a 2 digit integer => ");
-		int x;
-		scanf("%2d", &x);
+		//printf("Enter a 2 digit integer => ");
+		int x = 9;
+		//scanf("%2d", &x);
 		
 		node_t* retrievedWord = linkedlist_get(words, x);
 		printf("%s\n", (char*)retrievedWord->val);
@@ -99,7 +98,7 @@ void test_character_gen(void) {
 void test_words_gen_from_chars(void) {
 	node_t* words = read_Words();
 	node_t* characters = generate_Guess_Characters(8);
-	node_t* resultWords = find_words_from_chars(characters, 5, words);
+	node_t* resultWords = find_words_from_chars(characters, 5, words, 3, 7);
 
 	printf("Characters:\n");
 	linkedlist_print(characters);
@@ -153,4 +152,13 @@ void test_hints(void) {
 	}
 	delete_hint_type(hints);
 	linkedlist_delete(words);
+}
+
+void run_tests(void) {
+	test_list();
+	test_words_read();
+	test_character_gen();
+	test_words_gen_from_chars();
+	test_config_file();
+	test_hints();
 }

@@ -19,6 +19,8 @@ typedef struct {
 	node_t* charsToContain;
 	int wordsToCheck;
 	int* numberOfWords;
+	int* minimum_word_length;
+	int* maximum_word_length;
 	pthread_mutex_t* wordsMutex;
 } thread_data_t;
 
@@ -255,6 +257,9 @@ void* word_searcher_thread(void* arg) {
 	node_t* charsToContain = working_data->charsToContain;
 	pthread_mutex_t* wordsMutex = working_data->wordsMutex;
 	int* numberOfWords = working_data->numberOfWords;
+
+	int* minimum_word_length = working_data->minimum_word_length;
+	int* maximum_word_length = working_data->maximum_word_length;
 	
 	//loop through each of the words assigned in working_data
 	//and check their validity considering the characters passed
@@ -270,7 +275,8 @@ void* word_searcher_thread(void* arg) {
 		int currentWordLength = strlen(currentWordToCheck);
 		
 		if ((currentWordLength <= linkedlist_size(charsToContain)) &&
-				(currentWordLength >= 3)) {
+				(currentWordLength >= *minimum_word_length) &&
+				(currentWordLength <= *maximum_word_length)) {
 
 			//check if the word is valid considering the current charsToContain
 			//if valid, add to the result word list.
@@ -296,7 +302,7 @@ void* word_searcher_thread(void* arg) {
 //find words from the passed list made up only of the list
 // of characters passed.
 node_t* find_words_from_chars(node_t* characters, int numberOfWords,
-		node_t* wordList) {
+		node_t* wordList, int minimum_word_length, int maximum_word_length) {
 	
 	//get the number of threads to generate based on the number of
 	//online processors on the system.
@@ -336,6 +342,8 @@ node_t* find_words_from_chars(node_t* characters, int numberOfWords,
 		currentData->charsToContain = characters;
 		currentData->wordsToCheck = incrementValue - 1;
 		currentData->numberOfWords = &numberOfWords;
+		currentData->minimum_word_length = &minimum_word_length;
+		currentData->maximum_word_length = &maximum_word_length;
 		currentData->wordsMutex = &wordsMutex;
 
 		//create the thread to handle the currentData
