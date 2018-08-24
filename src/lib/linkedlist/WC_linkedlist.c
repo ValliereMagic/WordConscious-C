@@ -8,8 +8,7 @@
 void delete_node_t(node_t* node);
 
 //private function to allocate memory properly
-void* allocate_memory(void* value, nodeType_t type) {
-    
+void* allocate_memory(void* value, node_type_t type) {
     if (value == NULL) {
         fprintf(stderr, "Error. allocate_memory() passed NULL value to allocate memory for.\n");
         return NULL;
@@ -30,7 +29,7 @@ void* allocate_memory(void* value, nodeType_t type) {
 }
 
 //private function to copy values passed to allocated memory
-void copy_value(void* dest, void* src, nodeType_t type) {
+void copy_value(void* dest, void* src, node_type_t type) {
     if (type == LINKEDLIST_CHAR) {
         strcpy(dest, src);
     
@@ -45,27 +44,25 @@ void copy_value(void* dest, void* src, nodeType_t type) {
 //print out each value stored in the linked
 //list.
 void linkedlist_print(node_t* head) {
-	node_t* current = head;
+	while (head != NULL) {
 
-	while (current != NULL) {
-
-        switch(current->type) {
+        switch(head->type) {
             case LINKEDLIST_INT:
-                printf("%d", *(int*)current->val);
+                printf("%d", *(int*)head->val);
                 break;
 
             case LINKEDLIST_CHAR:
-                printf("%s", (char*)current->val);
+                printf("%s", (char*)head->val);
                 break;
 
             case LINKEDLIST_DOUBLE:
-                printf("%f", *(double*)current->val);
+                printf("%f", *(double*)head->val);
                 break;
         }
 
-		current = current->next;
+		head = head->next;
 
-        if (current != NULL) {
+        if (head != NULL) {
             printf("%c ", ',');
         }
 	}
@@ -73,23 +70,23 @@ void linkedlist_print(node_t* head) {
 }
 
 //return 1 if equal, 0 if not.
-int check_equality(void* value, node_t* current) {
-    if (current == NULL) {
+int check_equality(void* value, node_t* head) {
+    if (head == NULL) {
         fprintf(stderr, "Error. NULL node passed to check_equality().\n");
         return 0;
     }
 
-    switch(current->type) {
+    switch(head->type) {
         case LINKEDLIST_INT: {
-            return (*(int*)value == *(int*)current->val);
+            return (*(int*)value == *(int*)head->val);
             break;
         }
         case LINKEDLIST_CHAR: {
-            return (strcmp(current->val, value) == 0);
+            return (strcmp(head->val, value) == 0);
             break;
         }
         case LINKEDLIST_DOUBLE: {
-            return (*(double*)value == *(double*)current->val);
+            return (*(double*)value == *(double*)head->val);
             break;
         }
     }
@@ -102,16 +99,14 @@ int check_equality(void* value, node_t* current) {
 //if the element is found in the list
 //index will be returned.
 //otherwise -1 will be returned.
-int linkedlist_index_of(void* value, node_t* head, nodeType_t type) {
-    node_t* current = head;
-    
+int linkedlist_index_of(void* value, node_t* head, node_type_t type) {
     int counter = 0;
 
-    while (current != NULL) {
-        if (check_equality(value, current)) {
+    while (head != NULL) {
+        if (check_equality(value, head)) {
             return counter;
         }
-        current = current->next;
+        head = head->next;
         counter++;
     }
 
@@ -121,11 +116,10 @@ int linkedlist_index_of(void* value, node_t* head, nodeType_t type) {
 //return the amount of elements stored in
 //the linked list.
 int linkedlist_size(node_t* head) {
-    node_t* current = head;
     int counter = 0;
 
-    while(current != NULL) {
-        current = current->next;
+    while(head != NULL) {
+        head = head->next;
         counter++;
     }
 
@@ -136,19 +130,17 @@ int linkedlist_size(node_t* head) {
 //If the index is out of bounds, NULL will
 //be returned.
 node_t* linkedlist_get(node_t* head, int index) {
-    node_t* current = head;
-
     int counter = 0;
 
     if (index >= 0) {
         
-        while(current != NULL) {
+        while(head != NULL) {
             
             if (counter == index) {
-                return current;
+                return head;
             }
             
-            current = current->next;
+            head = head->next;
             counter++;
         }
     }
@@ -160,24 +152,23 @@ node_t* linkedlist_get(node_t* head, int index) {
 //-1 will be returned.
 //1 will be returned on success.
 int linkedlist_remove_at(node_t* head, int index) {
-    node_t* current = head;
     node_t* previous = NULL;
 
     for (int i = 0; i < index; i++) {
-        if (current == NULL) {
+        if (head == NULL) {
             return -1;
         }
-        previous = current;
-        current = current->next;
+        previous = head;
+        head = head->next;
     }
     
-    if (current == NULL || previous == NULL) {
+    if (head == NULL || previous == NULL) {
         return -1;
     }
 
-    previous->next = current->next;
+    previous->next = head->next;
 
-    delete_node_t(current);
+    delete_node_t(head);
     return 1;
 }
 
@@ -185,16 +176,15 @@ int linkedlist_remove_at(node_t* head, int index) {
 //if the value is not in the list
 //-1 will be returned.
 //1 will be returned on success
-int linkedlist_remove_value(node_t* head, void* value, nodeType_t type) {
-    node_t* current = head;
+int linkedlist_remove_value(node_t* head, void* value, node_type_t type) {
     node_t* previous = NULL;
 
-    while (current != NULL) {
-        if (check_equality(value, current)) {
+    while (head != NULL) {
+        if (check_equality(value, head)) {
             break;
         }
-        previous = current;
-        current = current->next;
+        previous = head;
+        head = head->next;
     }
 
     if (previous == NULL) {
@@ -206,7 +196,7 @@ int linkedlist_remove_value(node_t* head, void* value, nodeType_t type) {
 }
 
 //set the value of a node, at a specific index
-int linkedlist_set(node_t* head, void* value, int index, nodeType_t type) {
+int linkedlist_set(node_t* head, void* value, int index, node_type_t type) {
     node_t* current = linkedlist_get(head, index);
 
     if (current == NULL) {
@@ -232,20 +222,20 @@ int linkedlist_set(node_t* head, void* value, int index, nodeType_t type) {
 
 //return new linked list if
 //successful. Return NULL otherwise.
-node_t* linkedlist_create(void* firstVal, nodeType_t type) {
+node_t* linkedlist_create(void* first_val, node_type_t type) {
     node_t* head = NULL;
     head = malloc(sizeof(node_t));
 
     if (head != NULL) {
         //allocate memory for new value
-        void* new_val = allocate_memory(firstVal, type);
+        void* new_val = allocate_memory(first_val, type);
 
         if (new_val == NULL) {
             fprintf(stderr, "Error. System out of memory.\n");
             return NULL;
         }
         //copy passed value to new_val
-        copy_value(new_val, firstVal, type);
+        copy_value(new_val, first_val, type);
 
         head->val = new_val;
         head->type = type;
@@ -258,18 +248,17 @@ node_t* linkedlist_create(void* firstVal, nodeType_t type) {
 //return a clone of the passed linked list.
 //return NULL on failure
 node_t* linkedlist_clone(node_t* head) {
-    node_t* current = head;
     node_t* new = NULL;
 
     //make sure a NULL list was not passed
     //to be copied.
-    if (current == NULL) {
+    if (head == NULL) {
         fprintf(stderr, "Error. Attempting to clone NULL linked list.\n");
         return NULL;
     }
 
     //create the new list from the head of the passed list
-    new = linkedlist_create(current->val, current->type);
+    new = linkedlist_create(head->val, head->type);
 
     //make sure that the creation of the new list didn't fail
     if (new == NULL) {
@@ -280,13 +269,13 @@ node_t* linkedlist_clone(node_t* head) {
     //go to the next element of the list to copy before
     //adding the next element, so as to not duplicate
     //the initial element.
-    current = current->next;
+    head = head->next;
 
     //add the rest of the elements until the end of the
     //list to copy is reached.
-    while(current != NULL) {
-        linkedlist_add(new, current->val, current->type);
-        current = current->next;
+    while(head != NULL) {
+        linkedlist_add(new, head->val, head->type);
+        head = head->next;
     }
 
     return new;
@@ -296,43 +285,40 @@ node_t* linkedlist_clone(node_t* head) {
 //return the same linked list shuffled
 //in a random order.
 void linkedlist_shuffle(node_t* head) {
-    
     if (sodium_init() < 0) {
         fprintf(stderr, "Error. failed to initiate libsodium in linkedlist_shuffle().\n");
         return;
     }
-
-    node_t* current = head;
     
-    int sizeOfCurrent = linkedlist_size(current);
+    int size_of_current = linkedlist_size(head);
     
-    for (int i = sizeOfCurrent - 1; i > 0; i--) {
+    for (int i = size_of_current - 1; i > 0; i--) {
         int index = randombytes_uniform(i + 1);
 
         //get nodes to swap
-        node_t* temp = linkedlist_get(current, index);
-        node_t* currentIndex = linkedlist_get(current, i);
+        node_t* temp = linkedlist_get(head, index);
+        node_t* current_index = linkedlist_get(head, i);
 
-        if (temp == NULL || currentIndex == NULL) {
+        if (temp == NULL || current_index == NULL) {
             fprintf(stderr, "Error. linkedlist_get() has returned null in linkedlist_shuffle()");
             return;
         }
 
-        nodeType_t tempType = temp->type;
+        node_type_t temp_type = temp->type;
         
         //make temporary copy of randomly found type
-        void* tempValue = allocate_memory(temp->val, tempType);
-        copy_value(tempValue, temp->val, tempType);
+        void* temp_value = allocate_memory(temp->val, temp_type);
+        copy_value(temp_value, temp->val, temp_type);
         
         //set randomly located value to current for loop index
-        linkedlist_set(temp, currentIndex->val, 0, currentIndex->type);
+        linkedlist_set(temp, current_index->val, 0, current_index->type);
         
         //set current index to the value that was at the randomly
         //located index
-        linkedlist_set(currentIndex, tempValue, 0, tempType);
+        linkedlist_set(current_index, temp_value, 0, temp_type);
 
         //deallocate the temporary value
-        free(tempValue);
+        free(temp_value);
     }
 
 }
@@ -340,19 +326,17 @@ void linkedlist_shuffle(node_t* head) {
 //add a element to the end of the
 //linked list.
 //return 1 if successful, -1 if unsuccessful
-int linkedlist_add(node_t* head, void* val, nodeType_t type) {
-    node_t* current = head;
-
+int linkedlist_add(node_t* head, void* val, node_type_t type) {
     //find the end of the list.
-    while(current->next != NULL) {
-        current = current->next;
+    while(head->next != NULL) {
+        head = head->next;
     }
 
-    //now current is the last node in the list
-    current->next = malloc(sizeof(node_t));
+    //now head is the last node in the list
+    head->next = malloc(sizeof(node_t));
     
     //make sure system is not out of memory
-    if (current->next == NULL) {
+    if (head->next == NULL) {
         fprintf(stderr, "Error. System out of memory.\n");
         return -1;
     }
@@ -368,12 +352,12 @@ int linkedlist_add(node_t* head, void* val, nodeType_t type) {
     //copy the passed value to the allocated memory
     copy_value(new_val, val, type);
 
-    //set current to freshly made node.
-    current = current->next;
+    //set head to freshly made node.
+    head = head->next;
     
-    current->val = new_val;
-    current->type = type;
-    current->next = NULL;
+    head->val = new_val;
+    head->type = type;
+    head->next = NULL;
 
     return 1;
 
@@ -389,18 +373,16 @@ void delete_node_t(node_t* node) {
 
 //delete linked list using head passed.
 void linkedlist_delete(node_t* head) {
-    node_t* current = head;
-
     int i = 0;
     node_t* temp;
     
-    while(current != NULL) {
-        temp = current->next;
+    while(head != NULL) {
+        temp = head->next;
         //printf("Deletion: %d.\n", i);
         
-        delete_node_t(current);
+        delete_node_t(head);
         
-        current = temp;
+        head = temp;
         i++;
     }
 }
