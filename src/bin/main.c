@@ -58,7 +58,7 @@ int main(void) {
 	run_tests();
 	printf("==========================\n");
 	config_t* user_config = get_user_config();
-	node_t* words = read_Words();
+	node_t* words = read_words();
 	
 	char config_ids[5][26] = {"amount_of_words_per_set",
 					 "number_of_letters_per_set",
@@ -75,7 +75,7 @@ int main(void) {
 	char running = 1;
 
 	while(running) {
-		node_t* guess_characters = generate_Guess_Characters(config_vars[1]);
+		node_t* guess_characters = generate_guess_characters(config_vars[1]);
 		node_t* guess_words = find_words_from_chars(guess_characters, config_vars[0],
 													words, config_vars[2], config_vars[3]);
 		

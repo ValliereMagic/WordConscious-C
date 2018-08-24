@@ -97,7 +97,7 @@ int check_equality(void* value, node_t* current) {
 //if the element is found in the list
 //index will be returned.
 //otherwise -1 will be returned.
-int linkedlist_indexOf(void* value, node_t* head, nodeType_t type) {
+int linkedlist_index_of(void* value, node_t* head, nodeType_t type) {
     node_t* current = head;
     
     int counter = 0;
@@ -154,7 +154,7 @@ node_t* linkedlist_get(node_t* head, int index) {
 //if the index is out of bounds
 //-1 will be returned.
 //1 will be returned on success.
-int linkedlist_removeAt(node_t* head, int index) {
+int linkedlist_remove_at(node_t* head, int index) {
     node_t* current = head;
     node_t* previous = NULL;
 
@@ -180,7 +180,7 @@ int linkedlist_removeAt(node_t* head, int index) {
 //if the value is not in the list
 //-1 will be returned.
 //1 will be returned on success
-int linkedlist_removeValue(node_t* head, void* value, nodeType_t type) {
+int linkedlist_remove_value(node_t* head, void* value, nodeType_t type) {
     node_t* current = head;
     node_t* previous = NULL;
 
@@ -196,7 +196,7 @@ int linkedlist_removeValue(node_t* head, void* value, nodeType_t type) {
         return -1;
     
     } else {
-        return linkedlist_removeAt(previous, 1);
+        return linkedlist_remove_at(previous, 1);
     }
 }
 
