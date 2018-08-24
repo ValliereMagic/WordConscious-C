@@ -51,20 +51,25 @@ void linkedlist_print(node_t* head) {
 
         switch(current->type) {
             case LINKEDLIST_INT:
-                printf("%d\n", *(int*)current->val);
+                printf("%d", *(int*)current->val);
                 break;
 
             case LINKEDLIST_CHAR:
-                printf("%s\n", (char*)current->val);
+                printf("%s", (char*)current->val);
                 break;
 
             case LINKEDLIST_DOUBLE:
-                printf("%f\n", *(double*)current->val);
+                printf("%f", *(double*)current->val);
                 break;
         }
 
 		current = current->next;
+
+        if (current != NULL) {
+            printf("%c ", ',');
+        }
 	}
+    printf("\n");
 }
 
 //return 1 if equal, 0 if not.

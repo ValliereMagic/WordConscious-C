@@ -15,44 +15,6 @@
 #include "string.h"
 #include "config.h"
 
-void pretty_print_guess_chars(node_t* characters) {
-	if (characters == NULL) {
-		return;
-	}
-	//assume 8 characters
-	//take account for the 7 commas and null terminator
-	//hence double length
-	int print_length = (linkedlist_size(characters) * 2);
-	char pretty_chars[print_length];
-
-	//set i to 1 to be able to exploit modulus math.
-	//(separate every word except the last with a comma)
-	
-	//use i-1 to account for the single shift
-	int i = 1;
-	for (; i < print_length; i++) {
-		
-		//if between a character
-		if ((i % 2 == 0) && (i < print_length - 1)) {
-			pretty_chars[i-1] = ',';
-		
-		} else {
-			char* value_string = characters->val;
-			
-			if (value_string == NULL) {
-				return;
-			}
-
-			pretty_chars[i-1] = value_string[0];
-			characters = characters->next;
-		}
-	}
-	//null terminate after building string
-	pretty_chars[i-1] = '\0';
-	
-	printf("%s\n", pretty_chars);
-}
-
 int main(void) {
 	//test program functions
 	run_tests();
@@ -79,7 +41,7 @@ int main(void) {
 		node_t* guess_words = find_words_from_chars(guess_characters, config_vars[0],
 													words, config_vars[2], config_vars[3]);
 		
-		pretty_print_guess_chars(guess_characters);
+		linkedlist_print(guess_characters);
 		linkedlist_print(guess_words);
 
 		linkedlist_delete(guess_characters);
