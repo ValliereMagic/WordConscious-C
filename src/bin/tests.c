@@ -15,99 +15,99 @@ void test_list(void) {
 
     printf("\n\n===Testing LinkedList===\n\n");
 
-	char helloList[sizeof("Hello World") + 1] = "Hello World";
-	node_t* listHead = linkedlist_create(helloList, LINKEDLIST_CHAR);
+	char hello_list[sizeof("Hello World") + 1] = "Hello World";
+	node_t* list_head = linkedlist_create(hello_list, LINKEDLIST_CHAR);
 
 	int test = 6;
-	linkedlist_add(listHead, &test, LINKEDLIST_INT);
+	linkedlist_add(list_head, &test, LINKEDLIST_INT);
 
-	double testDouble = 3.14159265;
-	linkedlist_add(listHead, &testDouble, LINKEDLIST_DOUBLE);
+	double test_double = 3.14159265;
+	linkedlist_add(list_head, &test_double, LINKEDLIST_DOUBLE);
 
-	printf("Index of 6 in the list: %d\n", linkedlist_indexOf(&test, listHead, LINKEDLIST_INT));
-	printf("Index of \"Hello World\" in the list: %d\n", linkedlist_indexOf(helloList, listHead, LINKEDLIST_CHAR));
-	printf("Index of PI in the list: %d\n", linkedlist_indexOf(&testDouble, listHead, LINKEDLIST_DOUBLE));
+	printf("Index of 6 in the list: %d\n", linkedlist_index_of(&test, list_head, LINKEDLIST_INT));
+	printf("Index of \"Hello World\" in the list: %d\n", linkedlist_index_of(hello_list, list_head, LINKEDLIST_CHAR));
+	printf("Index of PI in the list: %d\n", linkedlist_index_of(&test_double, list_head, LINKEDLIST_DOUBLE));
 
-	node_t* testNode = linkedlist_get(listHead, 1);
-	printf("Value at %d: %d\n", 1, *(int*)testNode->val);
+	node_t* test_node = linkedlist_get(list_head, 1);
+	printf("Value at %d: %d\n", 1, *(int*)test_node->val);
 
 	printf("===printing list 1st time===\n");
-	linkedlist_print(listHead);
+	linkedlist_print(list_head);
 
 	printf("===Shuffling the list===\n");
-	linkedlist_shuffle(listHead);
+	linkedlist_shuffle(list_head);
 
 	printf("===Printing shuffled list===\n");
-	linkedlist_print(listHead);
+	linkedlist_print(list_head);
 
 	printf("===Cloning list===\n");
-	node_t* clone_node = linkedlist_clone(listHead);
+	node_t* clone_node = linkedlist_clone(list_head);
 
 	printf("===Printing cloned list===\n");
 	linkedlist_print(clone_node);
 
 	linkedlist_delete(clone_node);
 
-	printf("remove codes: %d %d\n", linkedlist_removeAt(listHead, 0), linkedlist_removeAt(listHead, 1));
+	printf("remove codes: %d %d\n", linkedlist_remove_at(list_head, 0), linkedlist_remove_at(list_head, 1));
 
 	printf("===printing list 2nd time===\n");
-	linkedlist_print(listHead);
+	linkedlist_print(list_head);
 
-	printf("Remove using value code: %d\n", linkedlist_removeValue(listHead, &testDouble, LINKEDLIST_DOUBLE));
+	printf("Remove using value code: %d\n", linkedlist_remove_value(list_head, &test_double, LINKEDLIST_DOUBLE));
 
 	printf("===printing list 3rd time===\n");
-	linkedlist_print(listHead);
+	linkedlist_print(list_head);
 
-	int testInt = 64;
+	int test_int = 64;
 
-	linkedlist_set(listHead, &testInt, 0, LINKEDLIST_INT);
+	linkedlist_set(list_head, &test_int, 0, LINKEDLIST_INT);
 
 	printf("===printing list 4th time===\n");
-	linkedlist_print(listHead);
+	linkedlist_print(list_head);
 
 	printf("===deleting list===\n");
-	linkedlist_delete(listHead);
+	linkedlist_delete(list_head);
 }
 
 void test_words_read(void) {
-	node_t* words = read_Words();
+	node_t* words = read_words();
 	
 	if (words != NULL) {
 		printf("%d\n", linkedlist_size(words));
-		printf("Index of fish: %d\n", linkedlist_indexOf("fish", words, LINKEDLIST_CHAR));
+		printf("Index of fish: %d\n", linkedlist_index_of("fish", words, LINKEDLIST_CHAR));
 		//printf("\n");
 		
 		//printf("Enter a 2 digit integer => ");
 		int x = 9;
 		//scanf("%2d", &x);
 		
-		node_t* retrievedWord = linkedlist_get(words, x);
-		printf("%s\n", (char*)retrievedWord->val);
+		node_t* retrieved_word = linkedlist_get(words, x);
+		printf("%s\n", (char*)retrieved_word->val);
 		
 		linkedlist_delete(words);
 	}
 }
 
 void test_character_gen(void) {
-	node_t* characters = generate_Guess_Characters(8);
+	node_t* characters = generate_guess_characters(8);
 	linkedlist_print(characters);
 	printf("Amount of characters returned: %d\n", linkedlist_size(characters));
 	linkedlist_delete(characters);
 }
 
 void test_words_gen_from_chars(void) {
-	node_t* words = read_Words();
-	node_t* characters = generate_Guess_Characters(8);
-	node_t* resultWords = find_words_from_chars(characters, 5, words, 3, 7);
+	node_t* words = read_words();
+	node_t* characters = generate_guess_characters(8);
+	node_t* result_words = find_words_from_chars(characters, 5, words, 3, 7);
 
 	printf("Characters:\n");
 	linkedlist_print(characters);
 	printf("Found Words:\n");
-	linkedlist_print(resultWords);
+	linkedlist_print(result_words);
 
 	linkedlist_delete(words);
 	linkedlist_delete(characters);
-	linkedlist_delete(resultWords);
+	linkedlist_delete(result_words);
 }
 
 void test_config_file(void) {
@@ -139,7 +139,7 @@ void test_config_file(void) {
 void test_hints(void) {
 	hint_data_t* hints = create_hint_type();
 	hints->min_chars_unrevealed = 2;
-	node_t* words = read_Words();
+	node_t* words = read_words();
 	
 	for (int i = 0; i < 12; i++) {
 		get_hint(hints, words);

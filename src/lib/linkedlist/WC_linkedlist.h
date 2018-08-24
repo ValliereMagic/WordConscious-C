@@ -32,11 +32,11 @@ void linkedlist_shuffle(node_t* head);
 
 //remove a value at a specified index
 //a return of 1 means successful, -1 means failure
-int linkedlist_removeAt(node_t* head, int index);
+int linkedlist_remove_at(node_t* head, int index);
 
 //remove a passed value from the list
 //a return of 1 means successful, -1 means failure
-int linkedlist_removeValue(node_t* head, void* value, nodeType_t type);
+int linkedlist_remove_value(node_t* head, void* value, nodeType_t type);
 
 //set a node already in the list to a new value
 //a return of 1 means successful, -1 means failure
@@ -50,7 +50,7 @@ node_t* linkedlist_get(node_t* head, int index);
 //find the index of the node passed in the linkedlist
 //if it is present. If the element is not found,
 //return -1.
-int linkedlist_indexOf(void* value, node_t* head, nodeType_t type);
+int linkedlist_index_of(void* value, node_t* head, nodeType_t type);
 
 //return the amount of elements in the linked list.
 int linkedlist_size(node_t* head);
