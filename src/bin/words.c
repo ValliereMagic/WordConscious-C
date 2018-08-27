@@ -12,6 +12,7 @@
 
 
 #define MAX_WORD_LENGTH 128
+#define MAX_FILE_LCFS 11
 
 typedef struct {	
 	node_t* words_list;
@@ -154,22 +155,56 @@ int get_num_cpu_cores(void) {
 
 }
 
+//Using the amount of words in the word file, find the first thread_values_size
+//lowest factors of the number of words in the file.
+//function returns 0 on failure, and 1 on success.
+int get_possible_thread_values(int word_list_size, int* thread_values,
+			int thread_values_size) {
+
+	if (thread_values == NULL) {
+		fprintf(stderr, "Error. NULL thread_values pointer "
+						"passed to LCF function.\n");
+		thread_values[0] = 1;
+		return 0;
+	}
+
+	int value_counter = 0;
+	//check each value of i to see if it is a valid factor of word_list_size
+	//only keep checking until thread_values_size has been reached.
+	for (int i = 1; i <= word_list_size; i++) {
+
+		if (value_counter == thread_values_size) {
+			break;
+		
+		} else if ((word_list_size % i == 0) &&
+			(value_counter < thread_values_size)) {
+
+			thread_values[value_counter] = i;
+			value_counter++;
+		
+		}
+	}
+	return 1;
+}
+
 //get the closest number of threads to the number of
 //processors that divides evenly into the number of
 //words in the words file.
 //returns -1 on failure.
-int get_thread_number() {
-	int possible_thread_values[] = {1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30};
+int get_thread_number(int word_list_size) {
+	int possible_thread_values[MAX_FILE_LCFS];
+	int valid_values = get_possible_thread_values(word_list_size, possible_thread_values, MAX_FILE_LCFS);
+	
 	int num_processors = get_num_cpu_cores();
 	
-	if (num_processors <= 0) {
+	if ((num_processors <= 0) || (valid_values == 0)) {
 		return -1;
 	}
 	
 	int distance = abs(possible_thread_values[0] - num_processors);
 	int idx = 0;
 
-	for (int c = 1; c < 11; c++) {
+	for (int c = 1; c < MAX_FILE_LCFS; c++) {
 		int c_distance = abs(possible_thread_values[c] - num_processors);
 
 		if (c_distance < distance) {
@@ -303,9 +338,11 @@ void* word_searcher_thread(void* arg) {
 node_t* find_words_from_chars(node_t* characters, int number_of_words,
 		node_t* word_list, int minimum_word_length, int maximum_word_length) {
 	
+	int word_list_size = linkedlist_size(word_list);
+
 	//get the number of threads to generate based on the number of
 	//online processors on the system.
-	int num_threads = get_thread_number();
+	int num_threads = get_thread_number(word_list_size);
 
 	//fail if can't find number of processors.
 	if (num_threads < 0) {
@@ -317,7 +354,7 @@ node_t* find_words_from_chars(node_t* characters, int number_of_words,
 	node_t* result_words = NULL;
 
 	int start_value = 0;
-	int increment_value = linkedlist_size(word_list) / num_threads;
+	int increment_value = word_list_size / num_threads;
 
 	//threads holds each generated thread that needs to be joined back
 	//thread_data holds allocated work packages for each thread to work on.
