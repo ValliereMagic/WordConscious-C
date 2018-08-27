@@ -7,7 +7,13 @@
 
 #include <stdio.h>
 #include <ctype.h>
-#include "string.h"
+#include "config.h"
+
+#ifdef HAVE_STRING_H
+	#include "string.h"
+#else
+	#include "strings.h"
+#endif
 
 #include "WC_linkedlist.h"
 #include "words.h"
@@ -15,7 +21,6 @@
 #include "libconfig.h"
 #include "config_usr.h"
 #include "hints.h"
-#include "config.h"
 
 //print the user help screen.
 void print_help(void) {
@@ -26,6 +31,29 @@ void print_help(void) {
            "   s -> shuffle the letters.\n"
            "   w -> list how many words are left.\n"
            "   q -> quit the game.\n");
+}
+
+//print out the list of things that the user has guessed;
+//that aren't words in the list.
+void print_user_inputs(node_t* user_inputs) {
+	if (user_inputs == NULL) {
+		printf("You haven't guessed any words yet!\n");
+	
+	} else {
+		printf("Guessed Words: ");
+		linkedlist_print(user_inputs);
+	}
+}
+
+//print out the list of words the user has successfully guessed.
+void print_guessed_words(node_t* guessed_words) {
+	if (guessed_words == NULL) {
+		printf("You haven't guessed any words correctly yet!\n");
+	
+	} else {
+		printf("Guessed Words: ");
+		linkedlist_print(guessed_words);
+	}
 }
 
 //go through an entire string and set each character to lower case.
@@ -182,6 +210,19 @@ int main(void) {
 					case 'h': {
 						get_hint(hint_data, guess_words);
 						printf("%s\n", hint_data->result);
+						break;
+					}
+					case 'w': {
+						printf("There is / are: %d word(s) left.\n", get_words_left(guess_words));
+						break;
+					}
+					case 'f': {
+						print_guessed_words(guessed_words);
+						break;
+					}
+					case 'g': {
+						print_user_inputs(user_inputs);
+						break;
 					}
 				}
 			
