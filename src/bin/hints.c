@@ -128,15 +128,42 @@ char* initialize_current_guess_word(void) {
 }
 
 //retrieve word at index making sure it isn't out of bounds.
-char* get_word_equality_test(int* current_hint_index, int* max_value, node_t* guess_words) {
+char* get_word_equality_test(int* current_hint_index, int* max_value, int* offset, node_t* guess_words) {
     //make sure retrieving the word at the current index is not out of bounds.
-    if (*current_hint_index < (*max_value - 1)) {
+    if (*current_hint_index < (*max_value + *offset) ) {
         
         //retrieve word at current_hint_index
         char* internal_check = get_char_from_node(linkedlist_get(guess_words, *current_hint_index));
         return internal_check;
     }
     return NULL;
+}
+
+//compensation for \0 at first guessable_words value.
+//when the val is removed from the first element in my linked_list
+//the node is not removed as it is the head. Instead it is just set to
+//"\0" in this case. This is compensation for that.
+void get_max_value(int* max_value, int* offset, node_t* guessable_words) {
+    if (guessable_words == NULL) {
+        fprintf(stderr, "Error. null list passed to get_max_value in hints.c.\n");
+        return;
+    }
+
+    int size = linkedlist_size(guessable_words);
+    char* first_guess_word = guessable_words->val;
+    
+    if (first_guess_word == NULL) {
+        fprintf(stderr, "Error. the first word in guessable_words is NULL.\n");
+    }
+
+    if (strcmp(first_guess_word, "\0") == 0) {
+        *max_value = size - 1;
+        *offset = 1;
+    
+    } else {
+        *max_value = size;
+        *offset = 0;
+    }
 }
 
 //result is stored in hint_data->result
@@ -147,7 +174,9 @@ void get_hint(hint_data_t* hint_data, node_t* guessable_words) {
 
     //used to make sure the current index is not longer than the guessable
     //words list.
-    int max_value = linkedlist_size(guessable_words);
+    //compensate for the first item in the list being removed.
+    int max_value, offset;
+    get_max_value(&max_value, &offset, guessable_words);
     
     //the current index of the word that we are revealing hints for.
     int current_hint_index = hint_data->current_hint_index;
@@ -158,6 +187,7 @@ void get_hint(hint_data_t* hint_data, node_t* guessable_words) {
     //the current word we are revealing
     char* current_guess_word = hint_data->current_guess_word;
 
+    //allocate current_guess_word on first run.
     if (current_guess_word == NULL) {
         hint_data->current_guess_word = current_guess_word = initialize_current_guess_word();
         
@@ -166,14 +196,16 @@ void get_hint(hint_data_t* hint_data, node_t* guessable_words) {
         }
     }
 
-    char* word_equality_test = get_word_equality_test(&current_hint_index, &max_value, guessable_words);
+    //check if current_hint_index is out of bounds of the list. If it is within the bounds,
+    //return the string that is the value in that node.
+    char* word_equality_test = get_word_equality_test(&current_hint_index, &max_value, &offset, guessable_words);
 
     //if the hint_data is new, or the word is missing from the list,
     //or a word has been found pick a new word to reveal characters from
     if (current_hint_index < 0 || word_equality_test == NULL || 
         strcmp(word_equality_test, current_guess_word) != 0) {
-        printf("guilty\n");
-        hint_data->current_hint_index = current_hint_index = randombytes_uniform(max_value);
+
+        hint_data->current_hint_index = current_hint_index = randombytes_uniform(max_value) + offset;
         hint_data->chars_revealed = chars_revealed = 0;
 
         char* new_word = get_char_from_node(linkedlist_get(guessable_words, current_hint_index));
