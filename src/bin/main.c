@@ -132,6 +132,20 @@ void cleanup_lists(node_t* guess_characters, node_t* guess_words, node_t* guesse
 	}
 }
 
+void read_configuration_ids(int* config_vars, config_t* user_config) {
+	
+	char config_ids[5][26] = {"amount_of_words_per_set",
+					 "number_of_letters_per_set",
+					 "minimum_word_length",
+					 "maximum_word_length",
+					 "min_left_hint_reveal"};
+	
+	//go through all the id keys, and pull their integer values into config_vars[].
+	for (int i = 0; i < 5; i++) {
+		config_lookup_int(user_config, config_ids[i], &config_vars[i]);
+	}
+}
+
 int main(void) {
 	//test program functions
 	//run_tests();
@@ -140,19 +154,10 @@ int main(void) {
 	config_t* user_config = get_user_config();
 	//read in words from words file.
 	node_t* words = read_words();
-	
-	char config_ids[5][26] = {"amount_of_words_per_set",
-					 "number_of_letters_per_set",
-					 "minimum_word_length",
-					 "maximum_word_length",
-					 "min_left_hint_reveal"};
 
+	//read configuration variables
 	int config_vars[] = {10, 8, 3, 7, 0};
-	
-	//go through all the id keys, and pull their integer values into config_vars[].
-	for (int i = 0; i < 5; i++) {
-		config_lookup_int(user_config, config_ids[i], &config_vars[i]);
-	}
+	read_configuration_ids(config_vars, user_config);
 
 	//Create hint object.
 	hint_data_t* hint_data = create_hint_type(config_vars[4]);
