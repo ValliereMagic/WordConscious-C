@@ -1,6 +1,13 @@
 
 #include <stdio.h>
-#include <string.h>
+#include "config.h"
+
+#ifdef HAVE_STRING_H
+    #include <string.h>
+#else
+    #include <strings.h>
+#endif
+
 #include "WC_linkedlist.h"
 #include "hints.h"
 #include "sodium.h"
