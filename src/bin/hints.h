@@ -10,7 +10,7 @@ typedef struct {
 } hint_data_t;
 
 //create a new hint type
-hint_data_t* create_hint_type(void);
+hint_data_t* create_hint_type(int min_chars_unrevealed);
 
 //delete a hint type
 void delete_hint_type(hint_data_t* type);

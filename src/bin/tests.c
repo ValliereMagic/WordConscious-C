@@ -137,7 +137,7 @@ void test_config_file(void) {
 }
 
 void test_hints(void) {
-	hint_data_t* hints = create_hint_type();
+	hint_data_t* hints = create_hint_type(0);
 	hints->min_chars_unrevealed = 2;
 	node_t* words = read_words();
 	
