@@ -121,6 +121,7 @@ int main(void) {
 
 	int config_vars[] = {10, 8, 3, 7, 0};
 	
+	//go through all the id keys, and pull their integer values into config_vars[].
 	for (int i = 0; i < 5; i++) {
 		config_lookup_int(user_config, config_ids[i], &config_vars[i]);
 	}
@@ -128,6 +129,8 @@ int main(void) {
 	//Create hint object.
 	hint_data_t* hint_data = create_hint_type(config_vars[4]);
 	
+	//specifies that the program is running. When this is set to 0,
+	//the program will exit.
 	char running = 1;
 
 	//keep running main game until user quits. (makes running false)
@@ -136,6 +139,7 @@ int main(void) {
 		node_t* guess_characters = generate_guess_characters(config_vars[1]);
 		node_t* guess_words = find_words_from_chars(guess_characters, config_vars[0],
 													words, config_vars[2], config_vars[3]);
+		//initialized to NULL, created when needed.
 		node_t* guessed_words = NULL;
 		node_t* user_inputs = NULL;
 		
