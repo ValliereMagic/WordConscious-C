@@ -7,7 +7,7 @@
 
 //create a new hint type, initialize the default values
 //return the new created type
-hint_data_t* create_hint_type(void) {
+hint_data_t* create_hint_type(int min_chars_unrevealed) {
     hint_data_t* type = malloc(sizeof(hint_data_t));
     
     if (type == NULL) {
@@ -16,7 +16,7 @@ hint_data_t* create_hint_type(void) {
     }
 
     //set default values to hint_type.
-    type->min_chars_unrevealed = 0;
+    type->min_chars_unrevealed = min_chars_unrevealed;
     type->current_hint_index = -1;
     type->current_guess_word = NULL;
     type->chars_revealed = 0;
@@ -172,7 +172,7 @@ void get_hint(hint_data_t* hint_data, node_t* guessable_words) {
     //or a word has been found pick a new word to reveal characters from
     if (current_hint_index < 0 || word_equality_test == NULL || 
         strcmp(word_equality_test, current_guess_word) != 0) {
-        
+        printf("guilty\n");
         hint_data->current_hint_index = current_hint_index = randombytes_uniform(max_value);
         hint_data->chars_revealed = chars_revealed = 0;
 
