@@ -191,7 +191,7 @@ int main(void) {
 		char action[128];
 		while (running) {
 			printf("> ");
-			scanf("%127s", &action);
+			scanf("%127s", action);
 			
 			int input_size = strlen(action);
 			str_to_lower(action, input_size);

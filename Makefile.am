@@ -38,7 +38,7 @@ libWC_linkedlist_la_SOURCES = \
     src/lib/linkedlist/WC_linkedlist.c src/lib/linkedlist/WC_linkedlist.h
 
 #Linkedlist Version
-libWC_linkedlist_la_LDFLAGS = -version-info 0:0:0 -no-undefined
+libWC_linkedlist_la_LDFLAGS = -version-info 1:0:0 -no-undefined
 
 libWC_linkedlist_la_LIBADD = @WC_sodium_flags@
 
