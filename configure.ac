@@ -1,5 +1,5 @@
 #Init the package
-AC_INIT([WordConscious], [0.0.1])
+AC_INIT([WordConscious], [1.0.0])
 
 #Minimum version of autoconf
 AC_PREREQ([2.68])
