@@ -12,6 +12,8 @@
 
 #include "WC_linkedlist.h"
 
+//internal function definition for deleting individual
+//linkedlist nodes.
 void delete_node_t(node_t* node);
 
 //private function to allocate memory properly
