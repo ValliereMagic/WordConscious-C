@@ -9,7 +9,7 @@ WordConscious_SOURCES = \
     src/bin/tests.c src/bin/tests.h \
     src/bin/words.c src/bin/words.h \
     src/bin/config_usr.c src/bin/config_usr.h \
-    src/bin/hints.c /src/bin/hints.h \
+    src/bin/hints.c src/bin/hints.h \
     src/lib/linkedlist/WC_linkedlist.h
 
 #Link libsodium
